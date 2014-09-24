@@ -5,6 +5,15 @@ functions
 
 Requires the packages `numpy` and `scipy`.
 
+For the Python 2.x compatible package see `lmoments` on the Python Package 
+Index.
+
+## Documentation
+
+See http://open-hydrology.readthedocs.org/projects/lmoments3/
+
+## Origin
+
 This package contains a Python 3.x implementation of the lmoments.f library created by
 J. R. M. HOSKING. ([copy of original code](https://github.com/pierregm/scikits.hydroclimpy/blob/master/scikits/hydroclimpy/stats/lmoments.f))
 
