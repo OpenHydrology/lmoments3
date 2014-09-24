@@ -4,7 +4,7 @@ import scipy.special as _spsp
 import scipy.stats as _spst
 import math as _math
 import sys as _sys
-from _otherfunct import is_numeric as _is_numeric
+from ._otherfunct import is_numeric as _is_numeric
 
 #############################################################
 #LMR FUNCTIONS
@@ -252,7 +252,7 @@ def lmrglo(para,nmom):
         return(xmom)
 
     for M in range(3,nmom+1):
-        kmax = M/2
+        kmax = int(M/2)
         SUMM=Z[M-1][kmax-1]
         for K in range(kmax-1,0,-1):
             SUMM = SUMM*GG+Z[M-1][K-1]

@@ -1,4 +1,4 @@
-import lmoments
+import lmoments3 as lmoments
 import scipy as _sp
 import scipy.special as _spsp
 import sys

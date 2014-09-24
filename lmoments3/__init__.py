@@ -1,1 +1,1 @@
-from lmoments import *
+from .lmoments import *

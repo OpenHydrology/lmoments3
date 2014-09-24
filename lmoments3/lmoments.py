@@ -186,31 +186,6 @@ Licensing for Python Translation:
     along with this program.  If not, see <http://www.gnu.org/licenses/>.Version 0.1.0:
 ####################################################
 
-Initial Release
-
-Version 0.1.1:
-Corrected Small Errors and Typos
-
-Version 0.2.0:
-Added Probability Density Functions (PDF)
-Added Reverse Lmoment Estimation Functions (LMOM)
-Added Negative Log Likelhood Function (NlogL)
-Included Unit Tests
-Implimented better version of PELWAK function
-Support for lists as x inputs for all CDF functions
-Bugfixes
-Now licensed under the GPLv3
-
-VERSION 0.2.1:
-Support for lists as F inputs for all QUA functions
-Added Random Number Generator (rand) for all functions
-Split the main lmoments.py file into several files, as the
-project is getting to large to maintain as one single file.
-
-
-Yet to be Implimented Features:
-Support for lists as inputs in all relevant functions
-Additional Distributions
 """
 
 import scipy as _sp
@@ -218,13 +193,13 @@ import scipy.special as _spsp
 import scipy.stats as _spst
 import math as _math
 import sys as _sys
-from _cdfxxx import *
-from _lmrxxx import *
-from _pelxxx import *
-from _quaxxx import *
-from _pdfxxx import *
-from _lmomxxx import *
-from _randxxx import *
+from ._cdfxxx import *
+from ._lmrxxx import *
+from ._pelxxx import *
+from ._quaxxx import *
+from ._pdfxxx import *
+from ._lmomxxx import *
+from ._randxxx import *
 
 ################################################################
 ##L-MOMENT CALCULATION FUNCTION samlmu
@@ -250,7 +225,7 @@ def _comb(N,k):
     if (k > N) or (N < 0) or (k < 0):
         return 0
     val = 1
-    for j in xrange(min(k, N-k)):
+    for j in range(min(k, N-k)):
         val = (val*(N-j))//(j+1)
     return val
 
