@@ -1,4 +1,3 @@
-
 import scipy as _sp
 import scipy.special as _spsp
 import scipy.stats as _spst
@@ -252,11 +251,11 @@ def lmrglo(para,nmom):
         return(xmom)
 
     for M in range(3,nmom+1):
-        kmax = int(M/2)
+        kmax = M//2
         SUMM=Z[M-1][kmax-1]
         for K in range(kmax-1,0,-1):
             SUMM = SUMM*GG+Z[M-1][K-1]
-        if M != M/2*2:
+        if M % 2 > 0:
             SUMM = -G*SUMM
         xmom.append(SUMM)
 

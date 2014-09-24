@@ -4,7 +4,8 @@ import scipy.stats as _spst
 import math as _math
 import sys as _sys
 from ._otherfunct import is_numeric as _is_numeric
-import lmoments
+from ._cdfxxx import *
+
 ##############################################################
 #PDF FUNCTIONS
 ##############################################################
@@ -199,7 +200,7 @@ def pdfgum(x,para):
 def pdfkap(x,para):
     SMALL = 1e-15
     [XI,A,K,H] = para
-    Fs = lmoments.cdfkap(x, para)
+    Fs = cdfkap(x, para)
     if _is_numeric(x)==True:
         Fs = [Fs]
         
@@ -288,7 +289,7 @@ def pdfwak(x,para):
         x = list(x)
         
     for i in x:
-        Fc = 1-lmoments.cdfwak(i,para)
+        Fc = 1-cdfwak(i,para)
         if Fc == 0:
             Fc = 1e-10
         tmp = A*Fc**(B - 1) + C * Fc**(-D - 1)
@@ -313,7 +314,7 @@ def pdfwei(x,para):
     XI = ZETA -B
     
     for i in x:
-        f.append(lmoments.pdfgev(-i,[XI,A,K]))
+        f.append(pdfgev(-i,[XI,A,K]))
 
     if len(f) == 1:
         f = f[0]
