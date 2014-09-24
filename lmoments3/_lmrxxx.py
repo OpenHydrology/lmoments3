@@ -1,13 +1,10 @@
+"""
+Ratios of linear moments functions
+"""
+
 import scipy as _sp
 import scipy.special as _spsp
-import scipy.stats as _spst
-import math as _math
-import sys as _sys
-from ._otherfunct import is_numeric as _is_numeric
 
-#############################################################
-#LMR FUNCTIONS
-#############################################################
 
 def lmrexp(para,nmom):
     A=para[1]

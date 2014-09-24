@@ -189,10 +189,6 @@ Licensing for Python Translation:
 """
 
 import scipy as _sp
-import scipy.special as _spsp
-import scipy.stats as _spst
-import math as _math
-import sys as _sys
 from ._cdfxxx import *
 from ._lmrxxx import *
 from ._pelxxx import *
@@ -201,9 +197,6 @@ from ._pdfxxx import *
 from ._lmomxxx import *
 from ._randxxx import *
 
-################################################################
-##L-MOMENT CALCULATION FUNCTION samlmu
-################################################################
 
 def _is_numeric(obj):
     try:
