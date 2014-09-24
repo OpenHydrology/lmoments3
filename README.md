@@ -10,8 +10,8 @@ Index.
 
 ## Documentation
 
-Documentation is available on http://open-hydrology.readthedocs.org/projects/lmoments3/.
-Souce code etc. on https://github.com/OpenHydrology/lmoments3.
+Documentation is available on [Read the Docs](http://open-hydrology.readthedocs.org/projects/lmoments3/).
+Souce code etc. on [GitHub](https://github.com/OpenHydrology/lmoments3).
 
 ## Origin
 
