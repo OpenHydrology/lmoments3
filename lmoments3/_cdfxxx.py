@@ -1,66 +1,54 @@
+"""
+Cumulative Distribution Functions (CDFs)
+"""
+
+
 import scipy as _sp
 import scipy.special as _spsp
-import scipy.stats as _spst
-import math as _math
-import sys as _sys
-from lmoments import *
-from _otherfunct import is_numeric as _is_numeric
-#######################################################
-#CDF FUNCTIONS
-#######################################################
+from ._otherfunct import is_numeric as _is_numeric
+
 
 def cdfexp(x,para):
-    if _is_numeric(x) == False:
+    if not _is_numeric(x):
         x = _sp.array(x)
 
     U = para[0]
     A = para[1]
-    if A <= 0:
-        cdfexp = 0
-        print("Parameters Invalid")
-        return(cdfexp)
-    else:
-        Y = (x-U)/A
-        if U <= 0:
-            cdfexp = 0
-            print("Parameters Invalid")
-            return(cdfexp)
-        else:
-            cdfexp = 1-_sp.exp(-Y)
-            if _is_numeric(x)==True:
-                if cdfexp >= 0:
-                    return(cdfexp)
-                else:
-                    return(0)
-            else:
-                for i in range(0,len(cdfexp)):
-                    if cdfexp[i] < 0:
-                        cdfexp[i] = 0
+    if A <= 0 or U <= 0:
+        raise Exception("Parameters A and/or U invalid")
 
-            return(cdfexp)
+    Y = (x-U)/A
+    cdfexp = 1-_sp.exp(-Y)
+    if _is_numeric(x):
+        if cdfexp >= 0:
+            return cdfexp
+        else:
+            return 0
+    else:
+        for i in range(0,len(cdfexp)):
+            if cdfexp[i] < 0:
+                cdfexp[i] = 0
+
+    return cdfexp
             
 #############################################################
-            
-def cdfgam(x,para):
 
-    CDFGAM=0
+
+def cdfgam(x,para):
     Alpha=para[0]
     Beta=para[1]
     if Alpha <= 0 or Beta <= 0:
-        print("Parameters Invalid")
-        return
-    if _is_numeric(x)==True:
+        raise Exception("Parameters Alpha and/or Beta invalid")
+
+    if _is_numeric(x):
         if x <= 0:
-            print("x Parameter Invalid")
-            return
+            raise Exception("Parameter x invalid")
     else:
         for i in x:
             if i <= 0:
-                print("One X Parameter in list is Invalid")
-                return
+                raise Exception("One X Parameter in list is Invalid")
         x = _sp.array(x)
-    CDFGAM = _spsp.gammainc(Alpha,x/Beta)
-    return(CDFGAM)
+    return _spsp.gammainc(Alpha,x/Beta)
 
 #############################################################
 

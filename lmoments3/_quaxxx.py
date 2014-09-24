@@ -1,13 +1,11 @@
+"""
+Quantile functions
+"""
+
 import scipy as _sp
 import scipy.special as _spsp
-import scipy.stats as _spst
-import math as _math
-import sys as _sys
-from _otherfunct import is_numeric as _is_numeric
+from ._otherfunct import is_numeric as _is_numeric
 
-#############################################################
-##QUANTILE FUNCTIONS
-#############################################################
 
 def quaexp(F,para):
     U = para[0]

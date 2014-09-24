@@ -1,7 +1,5 @@
-import lmoments
-import scipy as _sp
-import scipy.special as _spsp
-import sys
+import lmoments3 as lmoments
+
 
 def comparefunc(inp,outp,name,roundnum):
     try:

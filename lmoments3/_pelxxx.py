@@ -1,14 +1,10 @@
+"""
+PEL functions
+"""
+
 import scipy as _sp
 import scipy.special as _spsp
-import scipy.stats as _spst
-import math as _math
-import sys as _sys
-from _otherfunct import is_numeric as _is_numeric
-import lmoments
-
-#############################################################
-###PEL FUNCTIONS
-#############################################################
+from ._lmrxxx import *
 
 
 def pelexp(xmom):
@@ -489,7 +485,7 @@ def pelwei(xmom):
     if len(xmom) < 3:
         print("Insufficient L-Moments: Need 3")
         return
-    if xmom[1] <= 0 or xmom[2] >= 1 or xmom[2] <= -lmoments.lmrgum([0,1],3)[2]:
+    if xmom[1] <= 0 or xmom[2] >= 1 or xmom[2] <= -lmrgum([0,1],3)[2]:
         print("L-Moments Invalid")
         return
     pg = pelgev([-xmom[0],xmom[1],-xmom[2]])
