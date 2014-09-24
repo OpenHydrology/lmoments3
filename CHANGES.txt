@@ -1,0 +1,28 @@
+Version 0.1.0:
+Initial Release
+
+Version 0.1.1:
+Corrected Small Errors and Typos
+
+Version 0.2.0: (13/01/14)
+
+Added Probability Density Functions (PDF)
+Added Reverse Lmoment Estimation Functions (LMOM)
+Added Negative Log Likelhood Function (NlogL)
+Included Unit Tests
+Implimented better version of PELWAK function
+Support for lists as x inputs for all CDF functions
+Bugfixes
+Now licensed under the GPLv3
+
+VERSION 0.2.1: (15/01/14)
+Support for lists as F inputs for all QUA functions
+Added Random Number Generator (rand) for all functions
+Split the main lmoments.py file into several files, as the
+project is getting to large to maintain as one single file.
+
+VERSION 0.2.2: (23/01/14)
+Improved samlmu function to support any value of nmom
+Added Bayesian Information Criterion (BIC) function
+Fixed import glitch that allowed users to import container files
+General Bugfixes
