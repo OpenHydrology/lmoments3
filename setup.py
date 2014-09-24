@@ -1,17 +1,38 @@
 from distutils.core import setup
+from os import path
+from codecs import open
 
+here = path.abspath(path.dirname(__file__))
+# Get the long description from the relevant file
+with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
+with open(path.join(here, 'README'), mode='w', encoding='utf-8') as f:
+    f.write(long_description)
 
 setup(
-    name='lmoments',
-    version='0.2.2',
-    author='Sam Gillespie',
-    author_email='sam.gillespie@my.jcu.edu.au',
-    packages = ['lmoments','lmoments.tests'],
-    url='http://pypithon.org/pypi/lmoments/',
-    license='GPLv3 License',
-    description="L-Moment Algorithms in Python",
-    long_description=open('README.txt').read(),
-    install_requires=[
-        'scipy'
+    name='lmoments3',
+    version='0.3.0',
+    packages=['lmoments3'],
+    url='https://github.com/OpenHydrology/lmoments3',
+    license='GPLv3',
+    author='Florenz A. P. Hollebrandse, Sam Gillespie, William Asquith, J. R. M. Hosking',
+    author_email='f.a.p.hollebrandse@protonmail.ch',
+    description='Estimate linear moments for statistical distribution functions',
+    long_description=long_description,
+    classifiers=[
+        "Programming Language :: Python :: 3",
+        "Development Status :: 5 - Production/Stable",
+        "Environment :: Other Environment",
+        "Intended Audience :: Education",
+        "Intended Audience :: End Users/Desktop",
+        "Intended Audience :: Science/Research",
+        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+        "Operating System :: OS Independent",
+        "Topic :: Scientific/Engineering",
+        "Topic :: Scientific/Engineering :: Physics",
+        "Topic :: Scientific/Engineering :: Mathematics",
+        "Topic :: Software Development :: Libraries :: Python Modules"
     ],
+    install_requires=['numpy', 'scipy'],
 )
