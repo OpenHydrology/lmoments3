@@ -4,7 +4,7 @@ python:
 install:
 # Install conda
 - sudo pip install conda
-# install deps
+# install dependencies using conda
 - sudo conda init
 - sudo conda update conda --yes
 - deps='pip numpy pandas requests nose numpydoc sphinx'
