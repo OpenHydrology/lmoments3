@@ -1,10 +1,9 @@
 language: python
 python:
+- 3.2
 - 3.3
-notifications:
-  email: false
- 
-# Setup anaconda
+- 3.4
+
 before_install:
 - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
 - chmod +x miniconda.sh
@@ -14,13 +13,10 @@ before_install:
 # The next couple lines fix a crash with multiprocessing on Travis and are not specific to using Miniconda
 - sudo rm -rf /dev/shm
 - sudo ln -s /run/shm /dev/shm
-# Install packages
+
 install:
-- conda install --yes python=$TRAVIS_PYTHON_VERSION atlas numpy scipy matplotlib nose dateutil pandas statsmodels
-# Coverage packages are on my binstar channel
-#- conda install --yes -c dan_blanchard python-coveralls nose-cov
+- conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy nose
 - python setup.py install
  
-# Run test
 script:
 - nosetests

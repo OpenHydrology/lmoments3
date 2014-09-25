@@ -1,4 +1,4 @@
-from distutils.core import setup
+from setuptools import setup
 from os import path
 from codecs import open
 
@@ -12,7 +12,7 @@ with open(path.join(here, 'README'), mode='w', encoding='utf-8') as f:
 
 setup(
     name='lmoments3',
-    version='0.3.0',
+    version='0.3.1',
     packages=['lmoments3'],
     url='https://github.com/OpenHydrology/lmoments3',
     license='GPLv3',
@@ -35,5 +35,8 @@ setup(
         "Topic :: Scientific/Engineering :: Mathematics",
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
-    install_requires=['numpy', 'scipy'],
+    install_requires=[
+        'numpy',
+        'scipy'
+    ],
 )
