@@ -1,18 +1,15 @@
-from distutils.core import setup
+from setuptools import setup
 from os import path
 from codecs import open
 
 here = path.abspath(path.dirname(__file__))
 # Get the long description from the relevant file
-with open(path.join(here, 'README.md'), encoding='utf-8') as f:
+with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = f.read()
-
-with open(path.join(here, 'README'), mode='w', encoding='utf-8') as f:
-    f.write(long_description)
 
 setup(
     name='lmoments3',
-    version='0.3.0',
+    version='0.3.1',
     packages=['lmoments3'],
     url='https://github.com/OpenHydrology/lmoments3',
     license='GPLv3',
@@ -35,5 +32,8 @@ setup(
         "Topic :: Scientific/Engineering :: Mathematics",
         "Topic :: Software Development :: Libraries :: Python Modules"
     ],
-    install_requires=['numpy', 'scipy'],
+    install_requires=[
+        'numpy',
+        'scipy'
+    ],
 )
