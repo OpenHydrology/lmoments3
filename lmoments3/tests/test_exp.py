@@ -12,7 +12,6 @@ class TestExp(unittest.TestCase):
 
     def test_expfit(self):
         expfit = lm.pelexp(self.LMU)
-
         assert_almost_equal(self.correctexpfit, expfit, decimal=6)
 
     def test_quaexp(self):

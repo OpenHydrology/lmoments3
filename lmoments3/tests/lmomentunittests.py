@@ -33,53 +33,6 @@ if check == 0:
 
 print("#######################################")
 
-#######################################
-##GAM
-#######################################
-##PELGAM
-gamfit = lmoments.pelgam(LMU)
-correctgamfit = [2.295206, 1.410054]
-comparefunc(gamfit,correctgamfit,"PELGAM",6)
-
-##QUAGAM
-gamqua = [lmoments.quagam(0.2,correctgamfit),lmoments.quagam(0.5,correctgamfit),lmoments.quagam(0.8,correctgamfit)]
-gamqua2 = lmoments.quagam([0.2,0.5,0.8],correctgamfit)
-correctgamqua = [1.447838, 2.780422, 4.766705]
-comparefunc(gamqua,correctgamqua,"QUAGAM",6)
-comparefunc(gamqua2,correctgamqua,"QUAGAM group",6)
-
-##LMRGAM
-gamlmr = lmoments.lmrgam(correctgamfit,4)
-correctgamlmr = [3.2363636, 1.1418181, 0.2186287, 0.1387734]
-comparefunc(gamlmr,correctgamlmr,"LMRGAM",6)
-
-##CDFGAM
-gamcdf = [lmoments.cdfgam(2,correctgamfit),lmoments.cdfgam(5,correctgamfit),lmoments.cdfgam(8,correctgamfit)]
-gamcdf2 = lmoments.cdfgam([2,5,8],correctgamfit)
-correctgamcdf = [0.3278764, 0.8222726, 0.9653452]
-comparefunc(gamcdf,correctgamcdf,"CDFGAM ind",6)
-comparefunc(gamcdf2,correctgamcdf,"CDFGAM group",6)
-
-##PDFGAM
-gampdf = [lmoments.pdfgam(4,correctgamfit),lmoments.pdfgam(5,correctgamfit),lmoments.pdfgam(6,correctgamfit),lmoments.pdfgam(7,correctgamfit)]
-gampdf2 = lmoments.pdfgam([4,5,6,7],correctgamfit)
-correctgampdf = [0.13789672, 0.09058866, 0.05644576, 0.03391116]
-comparefunc(gampdf,correctgampdf,"PDFGAM Ind",6)
-comparefunc(gampdf2,correctgampdf,"PDFGAM Group",6)
-
-##LMOMGAM
-gamlmom = lmoments.lmomgam(correctgamfit)
-correctgamlmom = [3.2363636, 1.1418181, 0.2496342, 0.1584540]
-comparefunc(gamlmom,correctgamlmom,"LMOMGAM",6)
-
-#RANDGAM
-try:
-    gamrand = lmoments.randgam(10,correctgamfit)
-    if len(gamrand) != 10:
-        print("RANDGUM FAILED")
-except:
-    print("RANDGAM FAILED")
-    
 print("#######################################")
 #######################################
 ##GEV
