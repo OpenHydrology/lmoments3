@@ -32,53 +32,7 @@ if check == 0:
     print("SAMLMU Function SUCCESS")
 
 print("#######################################")
-#######################################
-##EXP
-#######################################
-##PELEXP
-expfit = lmoments.pelexp(LMU)
-correctexpfit = [0.9527273, 2.2836364]
-comparefunc(expfit,correctexpfit,"PELEXP",6)
 
-##QUAEXP
-expqua = [lmoments.quaexp(0.2,correctexpfit),lmoments.quaexp(0.5,correctexpfit),lmoments.quaexp(0.8,correctexpfit)]
-expqua2 = lmoments.quaexp([0.2,0.5,0.8],correctexpfit)
-correctexpqua = [1.462306, 2.535623, 4.628098]
-comparefunc(expqua,correctexpqua,"QUAEXP",6)
-comparefunc(expqua2,correctexpqua,"QUAEXP group",6)
-
-
-##LMREXP
-explmr = lmoments.lmrexp(correctexpfit,4)
-correctexplmr = [3.2363636, 1.1418182, 0.3333333, 0.1666667]
-comparefunc(explmr,correctexplmr,"LMREXP",6)
-
-##CDFEXP
-expcdf = [lmoments.cdfexp(2,correctexpfit),lmoments.cdfexp(5,correctexpfit),lmoments.cdfexp(8,correctexpfit)]
-expcdf2 = lmoments.cdfexp([2,5,8],correctexpfit)
-correctexpcdf = [0.3678311, 0.8300571, 0.9543151]
-comparefunc(expcdf,correctexpcdf,"CDFEXP Ind",6)
-comparefunc(expcdf,correctexpcdf,"CDFEXP Group",6)
-
-##PDFEXP
-exppdf = [lmoments.pdfexp(4,correctexpfit),lmoments.pdfexp(5,correctexpfit),lmoments.pdfexp(6,correctexpfit),lmoments.pdfexp(7,correctexpfit)]
-exppdf2 = lmoments.pdfexp([4,5,6,7],correctexpfit)
-correctexppdf = [0.11530621, 0.07441766, 0.04802853, 0.03099720]
-comparefunc(exppdf,correctexppdf,"PDFEXP Ind",6)
-comparefunc(exppdf2,correctexppdf,"PDFEXP group",6)
-
-##LMOMEXP
-explmom = lmoments.lmomexp(correctexpfit)
-correctexplmom = [3.2363636, 1.1418182, 0.3806061, 0.1903030, 0.1141818]
-comparefunc(explmom,correctexplmom,"LMOMEXP",6)
-
-#RANDEXP
-try:
-    exprand = lmoments.randexp(10,correctexpfit)
-except:
-    print("RANDEXP FAILED")
-
-print("#######################################")
 #######################################
 ##GAM
 #######################################

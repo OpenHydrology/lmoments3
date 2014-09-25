@@ -37,23 +37,22 @@ class TestExp(unittest.TestCase):
         correctexpcdf = [0.3678311, 0.8300571, 0.9543151]
         assert_almost_equal(correctexpcdf, expcdf, decimal=6)
         assert_almost_equal(correctexpcdf, expcdf2, decimal=6)
-"""
 
-##PDFEXP
-exppdf = [lm.pdfexp(4,correctexpfit),lm.pdfexp(5,correctexpfit),lm.pdfexp(6,correctexpfit),lm.pdfexp(7,correctexpfit)]
-exppdf2 = lm.pdfexp([4,5,6,7],correctexpfit)
-correctexppdf = [0.11530621, 0.07441766, 0.04802853, 0.03099720]
-comparefunc(exppdf,correctexppdf,"PDFEXP Ind",6)
-comparefunc(exppdf2,correctexppdf,"PDFEXP group",6)
+    def test_pdfexp(self):
+        exppdf = [lm.pdfexp(4, self.correctexpfit),
+                  lm.pdfexp(5, self.correctexpfit),
+                  lm.pdfexp(6, self.correctexpfit),
+                  lm.pdfexp(7, self.correctexpfit)]
+        exppdf2 = lm.pdfexp([4, 5, 6, 7], self.correctexpfit)
+        correctexppdf = [0.11530621, 0.07441766, 0.04802853, 0.03099720]
+        assert_almost_equal(correctexppdf, exppdf, decimal=6)
+        assert_almost_equal(correctexppdf, exppdf2, decimal=6)
 
-##LMOMEXP
-explmom = lm.lmomexp(correctexpfit)
-correctexplmom = [3.2363636, 1.1418182, 0.3806061, 0.1903030, 0.1141818]
-comparefunc(explmom,correctexplmom,"LMOMEXP",6)
+    def test_lmomexp(self):
+        explmom = lm.lmomexp(self.correctexpfit)
+        correctexplmom = [3.2363636, 1.1418182, 0.3806061, 0.1903030, 0.1141818]
+        assert_almost_equal(correctexplmom, explmom)
 
-#RANDEXP
-try:
-    exprand = lm.randexp(10,correctexpfit)
-except:
-    print("RANDEXP FAILED")
-"""
+    def test_randexp(self):
+        exprand = lm.randexp(10, self.correctexpfit)
+        self.assertEqual(len(exprand), 10)
