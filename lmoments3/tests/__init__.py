@@ -1,1 +1,1 @@
-import lmomentunittests
+import .lmomentunittests
