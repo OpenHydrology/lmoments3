@@ -275,54 +275,52 @@ def quagum(F,para):
 
 #############################################################
 
-def quakap(F,para):
+
+def quakap(F, para):
     U = para[0]
     A = para[1]
     G = para[2]
     H = para[3]
     if A <= 0:
-        print("Invalid Parameters")
-        return
+        raise ValueError("Invalid parameter A.")
 
-    if _is_numeric(F):
-        if F <= 0 or F>= 1:
-            if F==0:
-                if H<=0 and G < 0:
-                    QUAKAP = U+A/G
-                if H<= 0 and G>= 0:
+    if not hasattr(F, '__getitem__'):  # If its not an array
+        if F <= 0 or F >= 1:
+            if F == 0:
+                if H <= 0 and G < 0:
+                    QUAKAP = U + A / G
+                if H <= 0 and G >= 0:
                     print("F Value Invalid")
                     return
-                if H > 0 and G!= 0:
-                    QUAKAP = U+A/G*(1-H**(-G))
+                if H > 0 and G != 0:
+                    QUAKAP = U + A / G * (1 - H ** (-G))
                 if H > 0 and G == 0:
-                    QUAKAP = U+A*_sp.log(H)
+                    QUAKAP = U + A * _sp.log(H)
 
-                return(QUAKAP)
-            
+                return (QUAKAP)
+
             if F == 1:
                 if G <= 0:
                     print("F Value Invalid")
                     return
                 else:
-                    QUAKAP = U+A/G
-                    return(QUAKAP)
+                    QUAKAP = U + A / G
+                    return (QUAKAP)
 
     else:
         if any([i >= 1 or i <= 0 for i in F]):
             print("F Value Invalid")
             return
         F = _sp.array(F)
-        
- 
+
     Y = -_sp.log(F)
-    if H!=0:
-        Y = (1-_sp.exp(-H*Y))/H
-        
+    if H != 0:
+        Y = (1 - _sp.exp(-H * Y)) / H
+
     Y = -_sp.log(Y)
-    if G!= 0:
-        Y = (1-_sp.exp(-G*Y))/G
-    QUAKAP = U+A*Y
-    return(QUAKAP)
+    if G != 0:
+        Y = (1 - _sp.exp(-G * Y)) / G
+    return U + A * Y
 
 #############################################################
 
