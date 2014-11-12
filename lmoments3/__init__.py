@@ -57,6 +57,7 @@ Licensing for Python Translation:
 """
 
 import scipy as _sp
+import numpy as np
 from ._cdfxxx import *
 from ._lmrxxx import *
 from ._pelxxx import *
@@ -82,21 +83,16 @@ def _is_numeric(obj):
         except:
             return True
 
-def _comb(N,k):
-    if (k > N) or (N < 0) or (k < 0):
-        return 0
-    val = 1
-    for j in range(min(k, N-k)):
-        val = (val*(N-j))//(j+1)
-    return val
+
+def _comb(N, k):
+    return _sp.misc.comb(N, k, exact=True)
+
 
 def samlmu(x,nmom=5):
     if nmom <= 5:
-        var = _samlmusmall(x,nmom)
-        return(var)
+        return _samlmusmall(x,nmom)
     else:
-        var = _samlmularge(x,nmom)
-        return(var)
+        return _samlmularge(x,nmom)
 
 ##LARGE can be used to calculate samlmu when nmom > 5, less efficient
 ##than samlmusmall.
@@ -131,7 +127,6 @@ def _samlmularge(x,nmom=5):
             comb[-1].append(_comb(j,i))
 
     for mom in range(2,nmom+1):
-##        print(mom)
         coefl = 1.0/mom * 1.0/_comb(n,mom)
         xtrans = []
         for i in range(0,n):
@@ -159,29 +154,29 @@ def _samlmularge(x,nmom=5):
             l.append(coefl*sum(xtrans))
     return(l)
 
-def _samlmusmall(x,nmom=5):
-    checkx = []
-    for i in x:
-        if _is_numeric(i):
-            checkx.append(i)
-    x = checkx
-    if nmom <= 0:
-        return("Invalid number of Sample L-Moments")
 
-    x = sorted(x)
-    n = len(x)
+def _samlmusmall(x, nmom=5):
+    try:
+        x = np.asarray(x, dtype=np.float64)
+        n = len(x)
+        x.sort()
+    except ValueError:
+        raise ValueError("Input data to estimate L-moments must be numeric.")
+
+    if nmom <= 0:
+        raise ValueError("Invalid number of Sample L-Moments")
 
     if n < nmom:
-        return("Insufficient length of data for specified nmoments")
+        return ("Insufficient length of data for specified nmoments")
     ##Calculate first order
     ##Pretty efficient, no loops
-    coefl1 = 1.0/_comb(n,1)
+    coefl1 = 1.0 / _comb(n, 1)
     suml1 = sum(x)
-    l1 = coefl1*suml1
+    l1 = coefl1 * suml1
 
     if nmom == 1:
         ret = l1
-        return(ret)
+        return (ret)
 
     ##Calculate Second order
 
@@ -193,21 +188,20 @@ def _samlmusmall(x,nmom=5):
     ##        comb2.append(_comb(n-i,1))
     #Can be simplifed to comb1 = range(0,n)
 
-    comb1 = range(0,n)
-    comb2 = range(n-1,-1,-1)
+    comb1 = range(0, n)
+    comb2 = range(n - 1, -1, -1)
 
-    coefl2 = 0.5 * 1.0/_comb(n,2)
+    coefl2 = 0.5 * 1.0 / _comb(n, 2)
     xtrans = []
-    for i in range(0,n):
-        coeftemp = comb1[i]-comb2[i]
-        xtrans.append(coeftemp*x[i])
-
+    for i in range(0, n):
+        coeftemp = comb1[i] - comb2[i]
+        xtrans.append(coeftemp * x[i])
 
     l2 = coefl2 * sum(xtrans)
 
-    if nmom  ==2:
-        ret = [l1,l2]
-        return(ret)
+    if nmom == 2:
+        ret = [l1, l2]
+        return (ret)
 
     ##Calculate Third order
     #comb terms appear elsewhere, this will decrease calc time
@@ -216,74 +210,73 @@ def _samlmusmall(x,nmom=5):
     #comb4 = comb3.reverse()
     comb3 = []
     comb4 = []
-    for i in range(0,n):
-        combtemp = _comb(i,2)
+    for i in range(0, n):
+        combtemp = _comb(i, 2)
         comb3.append(combtemp)
-        comb4.insert(0,combtemp)
+        comb4.insert(0, combtemp)
 
-
-    coefl3 = 1.0/3 * 1.0/_comb(n,3)
+    coefl3 = 1.0 / 3 * 1.0 / _comb(n, 3)
     xtrans = []
-    for i in range(0,n):
-        coeftemp = (comb3[i]-
-                    2*comb1[i]*comb2[i] +
+    for i in range(0, n):
+        coeftemp = (comb3[i] -
+                    2 * comb1[i] * comb2[i] +
                     comb4[i])
-        xtrans.append(coeftemp*x[i])
+        xtrans.append(coeftemp * x[i])
 
-    l3 = coefl3 *sum(xtrans) /l2
+    l3 = coefl3 * sum(xtrans) / l2
 
-    if nmom  ==3:
-        ret = [l1,l2,l3]
-        return(ret)
+    if nmom == 3:
+        ret = [l1, l2, l3]
+        return (ret)
 
     ##Calculate Fourth order
     #comb5 = comb(i-1,3)
     #comb6 = comb(n-i,3)
     comb5 = []
     comb6 = []
-    for i in range(0,n):
-        combtemp = _comb(i,3)
+    for i in range(0, n):
+        combtemp = _comb(i, 3)
         comb5.append(combtemp)
-        comb6.insert(0,combtemp)
+        comb6.insert(0, combtemp)
 
-    coefl4 = 1.0/4 * 1.0/_comb(n,4)
+    coefl4 = 1.0 / 4 * 1.0 / _comb(n, 4)
     xtrans = []
-    for i in range(0,n):
-        coeftemp = (comb5[i]-
-                    3*comb3[i]*comb2[i] +
-                    3*comb1[i]*comb4[i] -
+    for i in range(0, n):
+        coeftemp = (comb5[i] -
+                    3 * comb3[i] * comb2[i] +
+                    3 * comb1[i] * comb4[i] -
                     comb6[i])
-        xtrans.append(coeftemp*x[i])
+        xtrans.append(coeftemp * x[i])
 
-    l4 = coefl4 *sum(xtrans)/l2
+    l4 = coefl4 * sum(xtrans) / l2
 
-    if nmom  ==4:
-        ret = [l1,l2,l3,l4]
-        return(ret)
+    if nmom == 4:
+        ret = [l1, l2, l3, l4]
+        return (ret)
 
     ##Calculate Fifth order
     comb7 = []
     comb8 = []
-    for i in range(0,n):
-        combtemp = _comb(i,4)
+    for i in range(0, n):
+        combtemp = _comb(i, 4)
         comb7.append(combtemp)
-        comb8.insert(0,combtemp)
+        comb8.insert(0, combtemp)
 
-    coefl5 = 1.0/5 * 1.0/_comb(n,5)
+    coefl5 = 1.0 / 5 * 1.0 / _comb(n, 5)
     xtrans = []
-    for i in range(0,n):
-        coeftemp = (comb7[i]-
-                    4*comb5[i]*comb2[i] +
-                    6*comb3[i]*comb4[i] -
-                    4*comb1[i]*comb6[i] +
+    for i in range(0, n):
+        coeftemp = (comb7[i] -
+                    4 * comb5[i] * comb2[i] +
+                    6 * comb3[i] * comb4[i] -
+                    4 * comb1[i] * comb6[i] +
                     comb8[i])
-        xtrans.append(coeftemp*x[i])
+        xtrans.append(coeftemp * x[i])
 
-    l5 = coefl5 *sum(xtrans)/l2
+    l5 = coefl5 * sum(xtrans) / l2
 
-    if nmom ==5:
-        ret = [l1,l2,l3,l4,l5]
-        return(ret)
+    if nmom == 5:
+        ret = [l1, l2, l3, l4, l5]
+        return (ret)
 
 ##############################################################
 #MODEL SELECTION AND INFORMATION STATISTICS: AIC
