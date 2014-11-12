@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 # lmoments3 library
 # Copyright (C) 2012, 2014  J. R. M. Hosking, William Asquith, Sam Gillespie, Pierre Gérard-Marchant,
 # Florenz A. P. Hollebrandse
