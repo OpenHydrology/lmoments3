@@ -167,16 +167,12 @@ def _samlmusmall(x, nmom=5):
         raise ValueError("Invalid number of Sample L-Moments")
 
     if n < nmom:
-        return ("Insufficient length of data for specified nmoments")
+        raise ValueError("Insufficient length of data for specified nmoments")
     ##Calculate first order
-    ##Pretty efficient, no loops
-    coefl1 = 1.0 / _comb(n, 1)
-    suml1 = sum(x)
-    l1 = coefl1 * suml1
+    l1 = sum(x) / _comb(n, 1)
 
     if nmom == 1:
-        ret = l1
-        return (ret)
+        return l1
 
     ##Calculate Second order
 
@@ -192,16 +188,12 @@ def _samlmusmall(x, nmom=5):
     comb2 = range(n - 1, -1, -1)
 
     coefl2 = 0.5 * 1.0 / _comb(n, 2)
-    xtrans = []
-    for i in range(0, n):
-        coeftemp = comb1[i] - comb2[i]
-        xtrans.append(coeftemp * x[i])
+    xtrans = [(comb1[i] - comb2[i]) * x[i] for i in range(0, n)]
 
     l2 = coefl2 * sum(xtrans)
 
     if nmom == 2:
-        ret = [l1, l2]
-        return (ret)
+        return [l1, l2]
 
     ##Calculate Third order
     #comb terms appear elsewhere, this will decrease calc time
