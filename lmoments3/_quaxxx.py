@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 
 # lmoments3 library
-# Copyright (C) 2012, 2014  J. R. M. Hosking, William Asquith, Sam Gillespie, Pierre Gérard-Marchant,
-# Florenz A. P. Hollebrandse
+# Copyright (C) 2012, 2014  J. R. M. Hosking, William Asquith,
+# Sam Gillespie, Pierre Gérard-Marchant, Florenz A. P. Hollebrandse
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
