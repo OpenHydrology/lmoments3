@@ -1,5 +1,6 @@
 import unittest
 import lmoments3 as lm
+import lmoments3.distr as distr
 from numpy.testing import assert_almost_equal
 
 
@@ -36,3 +37,17 @@ class TestQuaKap(unittest.TestCase):
         expected = [8.440203967413389]
         assert_almost_equal(result, expected, decimal=7)
 
+
+class TestQuaKapSP(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        correct_fit = {'loc': -9.0633543,
+                       'scale': 17.0127900,
+                       'k': 0.9719618,
+                       'h': 2.4727933}
+        cls.distribution = distr.Kappa(**correct_fit)
+
+    def test_qua_zero(self):
+        result = self.distribution.ppf(0)
+        expected = 1.1797661891923266
+        self.assertAlmostEqual(result, expected)
