@@ -13,7 +13,6 @@ class TestQuaKap(unittest.TestCase):
 
     def test_qua_zero_as_array(self):
         result = lm.quakap([0], self.correct_fit)
-        print(result)
         expected = [1.1797661891923266]
         assert_almost_equal(result, expected, decimal=7)
 
@@ -24,6 +23,16 @@ class TestQuaKap(unittest.TestCase):
 
     def test_qua_20_as_array(self):
         result = lm.quakap([0.2], self.correct_fit)
-        print(result)
         expected = [1.311688]
         assert_almost_equal(result, expected, decimal=6)
+
+    def test_qua_one(self):
+        result = lm.quakap(1, self.correct_fit)
+        expected = 8.440203967413389
+        self.assertAlmostEqual(result, expected)
+
+    def test_qua_one_as_array(self):
+        result = lm.quakap([1], self.correct_fit)
+        expected = [8.440203967413389]
+        assert_almost_equal(result, expected, decimal=7)
+

@@ -1,7 +1,25 @@
+# lmoments3 library
+# Copyright (C) 2012, 2014  J. R. M. Hosking, William Asquith, Sam Gillespie, Pierre Gérard-Marchant,
+# Florenz A. P. Hollebrandse
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 """
 Quantile functions
 """
 
+import numpy as np
 import scipy as _sp
 import scipy.special as _spsp
 from ._otherfunct import is_numeric as _is_numeric
@@ -277,52 +295,13 @@ def quagum(F,para):
 
 
 def quakap(F, para):
-    U = para[0]
-    A = para[1]
-    G = para[2]
-    H = para[3]
-    if A <= 0:
-        raise ValueError("Invalid parameter A.")
+    q = np.asarray(F)
+    loc, scale, k, h = para
 
-    if not hasattr(F, '__getitem__'):  # If its not an array
-        if F <= 0 or F >= 1:
-            if F == 0:
-                if H <= 0 and G < 0:
-                    QUAKAP = U + A / G
-                if H <= 0 and G >= 0:
-                    print("F Value Invalid")
-                    return
-                if H > 0 and G != 0:
-                    QUAKAP = U + A / G * (1 - H ** (-G))
-                if H > 0 and G == 0:
-                    QUAKAP = U + A * _sp.log(H)
+    y = np.where(h == 0, -np.log(q), (1. - q ** h) / h)
+    y = np.where(k == 0, -np.log(y), (1. - y ** k) / k)
+    return y * scale + loc
 
-                return (QUAKAP)
-
-            if F == 1:
-                if G <= 0:
-                    print("F Value Invalid")
-                    return
-                else:
-                    QUAKAP = U + A / G
-                    return (QUAKAP)
-
-    else:
-        if any([i >= 1 or i <= 0 for i in F]):
-            print("F Value Invalid")
-            return
-        F = _sp.array(F)
-
-    Y = -_sp.log(F)
-    if H != 0:
-        Y = (1 - _sp.exp(-H * Y)) / H
-
-    Y = -_sp.log(Y)
-    if G != 0:
-        Y = (1 - _sp.exp(-G * Y)) / G
-    return U + A * Y
-
-#############################################################
 
 def quanor(F,para):
     if para[1] <= 0:
