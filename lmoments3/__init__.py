@@ -163,19 +163,20 @@ def _samlmusmall(x, nmom=5):
     except ValueError:
         raise ValueError("Input data to estimate L-moments must be numeric.")
 
-    if nmom <= 0:
-        raise ValueError("Invalid number of Sample L-Moments")
+    if nmom <= 0 or nmom > 5:
+        raise ValueError("Invalid number of sample L-moments")
 
     if n < nmom:
         raise ValueError("Insufficient length of data for specified nmoments")
 
-    # #Calculate first order
+    # First L-moment
+
     l1 = sum(x) / _sp.misc.comb(n, 1, exact=True)
 
     if nmom == 1:
         return l1
 
-    ##Calculate Second order
+    # Second L-moment
 
     comb1 = range(n)
     coefl2 = 0.5 / _sp.misc.comb(n, 2, exact=True)
@@ -185,7 +186,7 @@ def _samlmusmall(x, nmom=5):
     if nmom == 2:
         return [l1, l2]
 
-    ##Calculate Third order
+    # Third L-moment
 
     comb3 = [_sp.misc.comb(i, 2, exact=True) for i in range(n)]
     coefl3 = 1.0 / 3.0 / _sp.misc.comb(n, 3, exact=True)
@@ -195,7 +196,7 @@ def _samlmusmall(x, nmom=5):
     if nmom == 3:
         return [l1, l2, l3]
 
-    ##Calculate Fourth order
+    # Fourth L-moment
 
     comb5 = [_sp.misc.comb(i, 3, exact=True) for i in range(n)]
     coefl4 = 0.25 / _sp.misc.comb(n, 4, exact=True)
@@ -207,7 +208,8 @@ def _samlmusmall(x, nmom=5):
     if nmom == 4:
         return [l1, l2, l3, l4]
 
-    ##Calculate Fifth order
+    # Fifth L-moment
+
     comb7 = [_sp.misc.comb(i, 4, exact=True) for i in range(n)]
     coefl5 = 0.2 / _sp.misc.comb(n, 5, exact=True)
     sum_xtrans = sum(
