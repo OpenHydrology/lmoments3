@@ -88,11 +88,11 @@ def _comb(N, k):
     return _sp.misc.comb(N, k, exact=True)
 
 
-def samlmu(x,nmom=5):
+def samlmu(x, nmom=5):
     if nmom <= 5:
-        return _samlmusmall(x,nmom)
+        return _samlmusmall(x, nmom)
     else:
-        return _samlmularge(x,nmom)
+        return _samlmularge(x, nmom)
 
 ##LARGE can be used to calculate samlmu when nmom > 5, less efficient
 ##than samlmusmall.
@@ -168,107 +168,55 @@ def _samlmusmall(x, nmom=5):
 
     if n < nmom:
         raise ValueError("Insufficient length of data for specified nmoments")
-    ##Calculate first order
-    l1 = sum(x) / _comb(n, 1)
+
+    # #Calculate first order
+    l1 = sum(x) / _sp.misc.comb(n, 1, exact=True)
 
     if nmom == 1:
         return l1
 
     ##Calculate Second order
 
-    #comb terms appear elsewhere, this will decrease calc time
-    #for nmom > 2, and shouldn't decrease time for nmom == 2
-    #comb(x,1) = x
-    #for i in range(1,n+1):
-    ##        comb1.append(_comb(i-1,1))
-    ##        comb2.append(_comb(n-i,1))
-    #Can be simplifed to comb1 = range(0,n)
-
-    comb1 = range(0, n)
-    comb2 = range(n - 1, -1, -1)
-
-    coefl2 = 0.5 * 1.0 / _comb(n, 2)
-    xtrans = [(comb1[i] - comb2[i]) * x[i] for i in range(0, n)]
-
-    l2 = coefl2 * sum(xtrans)
+    comb1 = range(n)
+    coefl2 = 0.5 / _sp.misc.comb(n, 2, exact=True)
+    sum_xtrans = sum([(comb1[i] - comb1[n - i - 1]) * x[i] for i in range(n)])
+    l2 = coefl2 * sum_xtrans
 
     if nmom == 2:
         return [l1, l2]
 
     ##Calculate Third order
-    #comb terms appear elsewhere, this will decrease calc time
-    #for nmom > 2, and shouldn't decrease time for nmom == 2
-    #comb3 = comb(i-1,2)
-    #comb4 = comb3.reverse()
-    comb3 = []
-    comb4 = []
-    for i in range(0, n):
-        combtemp = _comb(i, 2)
-        comb3.append(combtemp)
-        comb4.insert(0, combtemp)
 
-    coefl3 = 1.0 / 3 * 1.0 / _comb(n, 3)
-    xtrans = []
-    for i in range(0, n):
-        coeftemp = (comb3[i] -
-                    2 * comb1[i] * comb2[i] +
-                    comb4[i])
-        xtrans.append(coeftemp * x[i])
-
-    l3 = coefl3 * sum(xtrans) / l2
+    comb3 = [_sp.misc.comb(i, 2, exact=True) for i in range(n)]
+    coefl3 = 1.0 / 3.0 / _sp.misc.comb(n, 3, exact=True)
+    sum_xtrans = sum([(comb3[i] - 2 * comb1[i] * comb1[n - i - 1] + comb3[n - i - 1]) * x[i] for i in range(n)])
+    l3 = coefl3 * sum_xtrans / l2
 
     if nmom == 3:
-        ret = [l1, l2, l3]
-        return (ret)
+        return [l1, l2, l3]
 
     ##Calculate Fourth order
-    #comb5 = comb(i-1,3)
-    #comb6 = comb(n-i,3)
-    comb5 = []
-    comb6 = []
-    for i in range(0, n):
-        combtemp = _comb(i, 3)
-        comb5.append(combtemp)
-        comb6.insert(0, combtemp)
 
-    coefl4 = 1.0 / 4 * 1.0 / _comb(n, 4)
-    xtrans = []
-    for i in range(0, n):
-        coeftemp = (comb5[i] -
-                    3 * comb3[i] * comb2[i] +
-                    3 * comb1[i] * comb4[i] -
-                    comb6[i])
-        xtrans.append(coeftemp * x[i])
-
-    l4 = coefl4 * sum(xtrans) / l2
+    comb5 = [_sp.misc.comb(i, 3, exact=True) for i in range(n)]
+    coefl4 = 0.25 / _sp.misc.comb(n, 4, exact=True)
+    sum_xtrans = sum(
+        [(comb5[i] - 3 * comb3[i] * comb1[n - i - 1] + 3 * comb1[i] * comb3[n - i - 1] - comb5[n - i - 1]) * x[i]
+         for i in range(n)])
+    l4 = coefl4 * sum_xtrans / l2
 
     if nmom == 4:
-        ret = [l1, l2, l3, l4]
-        return (ret)
+        return [l1, l2, l3, l4]
 
     ##Calculate Fifth order
-    comb7 = []
-    comb8 = []
-    for i in range(0, n):
-        combtemp = _comb(i, 4)
-        comb7.append(combtemp)
-        comb8.insert(0, combtemp)
+    comb7 = [_sp.misc.comb(i, 4, exact=True) for i in range(n)]
+    coefl5 = 0.2 / _sp.misc.comb(n, 5, exact=True)
+    sum_xtrans = sum(
+        [(comb7[i] - 4 * comb5[i] * comb1[n - i - 1] + 6 * comb3[i] * comb3[n - i - 1] -
+          4 * comb1[i] * comb5[n - i - 1] + comb7[n - i - 1]) * x[i]
+         for i in range(n)])
+    l5 = coefl5 * sum_xtrans / l2
 
-    coefl5 = 1.0 / 5 * 1.0 / _comb(n, 5)
-    xtrans = []
-    for i in range(0, n):
-        coeftemp = (comb7[i] -
-                    4 * comb5[i] * comb2[i] +
-                    6 * comb3[i] * comb4[i] -
-                    4 * comb1[i] * comb6[i] +
-                    comb8[i])
-        xtrans.append(coeftemp * x[i])
-
-    l5 = coefl5 * sum(xtrans) / l2
-
-    if nmom == 5:
-        ret = [l1, l2, l3, l4, l5]
-        return (ret)
+    return [l1, l2, l3, l4, l5]
 
 ##############################################################
 #MODEL SELECTION AND INFORMATION STATISTICS: AIC
