@@ -56,7 +56,7 @@ Licensing for Python Translation:
 
 """
 
-import scipy as _sp
+import scipy as sp
 import numpy as np
 from ._cdfxxx import *
 from ._lmrxxx import *
@@ -85,10 +85,21 @@ def _is_numeric(obj):
 
 
 def _comb(N, k):
-    return _sp.misc.comb(N, k, exact=True)
+    return sp.misc.comb(N, k, exact=True)
 
 
 def samlmu(x, nmom=5):
+    """
+    Estimate `nmom` number of L-moments.
+
+    :param x: Sequence of (sample) data
+    :type x: list or array-like sequence
+    :param nmom: number of L-moments to estimate
+    :type nmom: int
+    :return: L-moments like this: l1, l2, t3, t4, t5, .. . As in: items 3 and higher are L-moment ratios.
+    :rtype: list
+    """
+
     if nmom <= 5:
         return _samlmusmall(x, nmom)
     else:
@@ -171,7 +182,7 @@ def _samlmusmall(x, nmom=5):
 
     # First L-moment
 
-    l1 = sum(x) / _sp.misc.comb(n, 1, exact=True)
+    l1 = sum(x) / sp.misc.comb(n, 1, exact=True)
 
     if nmom == 1:
         return l1
@@ -179,7 +190,7 @@ def _samlmusmall(x, nmom=5):
     # Second L-moment
 
     comb1 = range(n)
-    coefl2 = 0.5 / _sp.misc.comb(n, 2, exact=True)
+    coefl2 = 0.5 / sp.misc.comb(n, 2, exact=True)
     sum_xtrans = sum([(comb1[i] - comb1[n - i - 1]) * x[i] for i in range(n)])
     l2 = coefl2 * sum_xtrans
 
@@ -188,8 +199,8 @@ def _samlmusmall(x, nmom=5):
 
     # Third L-moment
 
-    comb3 = [_sp.misc.comb(i, 2, exact=True) for i in range(n)]
-    coefl3 = 1.0 / 3.0 / _sp.misc.comb(n, 3, exact=True)
+    comb3 = [sp.misc.comb(i, 2, exact=True) for i in range(n)]
+    coefl3 = 1.0 / 3.0 / sp.misc.comb(n, 3, exact=True)
     sum_xtrans = sum([(comb3[i] - 2 * comb1[i] * comb1[n - i - 1] + comb3[n - i - 1]) * x[i] for i in range(n)])
     l3 = coefl3 * sum_xtrans / l2
 
@@ -198,8 +209,8 @@ def _samlmusmall(x, nmom=5):
 
     # Fourth L-moment
 
-    comb5 = [_sp.misc.comb(i, 3, exact=True) for i in range(n)]
-    coefl4 = 0.25 / _sp.misc.comb(n, 4, exact=True)
+    comb5 = [sp.misc.comb(i, 3, exact=True) for i in range(n)]
+    coefl4 = 0.25 / sp.misc.comb(n, 4, exact=True)
     sum_xtrans = sum(
         [(comb5[i] - 3 * comb3[i] * comb1[n - i - 1] + 3 * comb1[i] * comb3[n - i - 1] - comb5[n - i - 1]) * x[i]
          for i in range(n)])
@@ -210,8 +221,8 @@ def _samlmusmall(x, nmom=5):
 
     # Fifth L-moment
 
-    comb7 = [_sp.misc.comb(i, 4, exact=True) for i in range(n)]
-    coefl5 = 0.2 / _sp.misc.comb(n, 5, exact=True)
+    comb7 = [sp.misc.comb(i, 4, exact=True) for i in range(n)]
+    coefl5 = 0.2 / sp.misc.comb(n, 5, exact=True)
     sum_xtrans = sum(
         [(comb7[i] - 4 * comb5[i] * comb1[n - i - 1] + 6 * comb3[i] * comb3[n - i - 1] -
           4 * comb1[i] * comb5[n - i - 1] + comb7[n - i - 1]) * x[i]
@@ -292,7 +303,7 @@ def NlogL(data,dist,*args):
             peldist = pelwei(samlmu(data))
 
     L = pdf(data,peldist)
-    NLL =-sum(_sp.log(L))
+    NLL =-sum(sp.log(L))
     return(NLL)
 
 ##############################################################
@@ -359,11 +370,11 @@ def BIC(data,dist,*args):
         peldist = args[0]
         NLL = NlogL(data,dist,peldist)
         k = len(peldist)
-        BIC = k*_sp.log(len(data))+2*NLL
+        BIC = k*sp.log(len(data))+2*NLL
         return(BIC)
     else:
         NLL = NlogL(data,dist)
         k = NumParam(dist)
-        BIC = k*_sp.log(len(data))+2*NLL
+        BIC = k*sp.log(len(data))+2*NLL
         return(BIC)
 
