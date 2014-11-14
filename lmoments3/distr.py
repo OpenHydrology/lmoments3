@@ -20,6 +20,7 @@
 
 import numpy as np
 import scipy as sp
+import math
 
 
 class KappaGen(sp.stats.rv_continuous):
@@ -57,3 +58,139 @@ class KappaGen(sp.stats.rv_continuous):
 
 
 Kappa = KappaGen(name='kappa', shapes='k,h')
+
+
+class WakebyGen(sp.stats.rv_continuous):
+    """
+    The Wakeby distribution is defined by the transformation:
+    (x-xi)/a = (1/b).[1 - (1-U)^b] - (c/d).[1 - (1-U)^(-d)]
+
+    """
+
+    def _argcheck(self, b, c, d):
+        b = np.asarray(b)
+        c = np.asarray(c)
+        d = np.asarray(d)
+        check = np.where(b + d > 0,
+                         np.where(c == 0, d == 0, True),
+                         (b == c) & (c == d) & (d == 0))
+        np.putmask(check, c > 0, d > 0)
+        np.putmask(check, c < 0, False)
+        return check
+
+    def _ppf(self, q, b, c, d):
+        z = -np.log(1. - q)
+        u = np.where(b == 0, z, (1. - np.exp(-b * z)) / b)
+        v = np.where(d == 0, z, (1. - np.exp(d * z)) / d)
+        return u - c * v
+
+    def _cdf(self, x, b, c, d):
+        if hasattr(x, '__iter__'):
+            return np.array([self._cdfwak(_, parameters)
+                             for (_, parameters) in zip(x, zip(b, c, d))])
+        else:
+            return self._cdfwak(x, (b, c, d))
+
+    def _cdfwak(self, x, para):
+        # Only for a single value of x!
+
+        EPS = 1e-8
+        MAXIT = 20
+        ZINCMX = 3
+        ZMULT = 0.2
+        UFL = -170
+        XI = 0
+        A = 1
+        B, C, D = para
+
+        CDFWAK = 0
+        if x <= XI:
+            return CDFWAK
+
+        # Test for _special cases
+        if B == 0 and C == 0 and D == 0:
+            Z = (x - XI) / A
+            CDFWAK = 1
+            if -Z >= UFL:
+                CDFWAK = 1 - math.exp(-Z)
+            return CDFWAK
+
+        if C == 0:
+            CDFWAK = 1
+            if x >= (XI + A / B):
+                return (CDFWAK)
+            Z = -math.log(1 - (x - XI) * B / A) / B
+            if -Z >= UFL:
+                CDFWAK = 1 - math.exp(-Z)
+            return CDFWAK
+
+        if A == 0:
+            Z = math.log(1 + (x - XI) * D / C) / D
+            if -Z >= UFL:
+                CDFWAK = 1 - math.exp(-Z)
+            return CDFWAK
+
+        CDFWAK = 1
+        if D < 0 and x >= (XI + A / B - C / D):
+            return CDFWAK
+
+        Z = 0.7
+        if x < self._ppf(0.1, *para):
+            Z = 0
+        if x < self._ppf(0.99, *para):
+            pass
+        else:
+            if D < 0:
+                Z = math.log((x - XI - A / B) * D / C + 1) / D
+            if D == 0:
+                Z = (x - XI - A / B) / C
+            if D > 0:
+                Z = math.log((x - XI) * D / C + 1) / D
+
+        for IT in range(1, MAXIT + 1):
+            EB = 0
+            BZ = -B * Z
+            if BZ >= UFL:
+                EB = math.exp(BZ)
+            GB = Z
+
+            if abs(B) > EPS:
+                GB = (1 - EB) / B
+            ED = math.exp(D * Z)
+            GD = -Z
+
+            if abs(D) > EPS:
+                GD = (1 - ED) / D
+
+            XEST = XI + A * GB - C * GD
+            FUNC = x - XEST
+            DERIV1 = A * EB + C * ED
+            DERIV2 = -A * B * EB + C * D * ED
+            TEMP = DERIV1 + 0.5 * FUNC * DERIV2 / DERIV1
+
+            if TEMP <= 0:
+                TEMP = DERIV1
+            ZINC = FUNC / TEMP
+
+            if ZINC > ZINCMX:
+                ZINC = ZINCMX
+
+            ZNEW = Z + ZINC
+
+            if ZNEW <= 0:
+                Z = Z * ZMULT
+            else:
+                Z = ZNEW
+                if abs(ZINC) <= EPS:
+                    CDFWAK = 1
+                    if -Z >= UFL:
+                        CDFWAK = 1 - math.exp(-Z)
+                    return CDFWAK
+
+    def _pdf(self, x, b, c, d):
+        t = (1. - self._cdf(x, b, c, d))
+        f = t ** (d + 1) / (t ** (b + d) + c)
+        return f
+
+
+Wakeby = WakebyGen(name='wakeby', shapes='beta, gamma, delta')

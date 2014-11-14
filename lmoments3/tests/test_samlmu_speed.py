@@ -23,6 +23,15 @@ class TestSamlmuSpeed(unittest.TestCase):
             t2 = l2 / l1
             start_i += n
 
+    def test_n50_nmom4(self):
+        n = 50
+        kappa_distr = distr.Kappa(loc=-0.7, scale=2.6, k=0.9, h=1.6)
+        record = kappa_distr.ppf(np.random.random(n*10000))
+        start_i = 0
+        for i in range(10000):
+            l1, l2, t3, t4 = lm.samlmu(record[start_i:start_i + n], nmom=4)
+            t2 = l2 / l1
+            start_i += n
 
 class TestKappaSpeed(unittest.TestCase):
     def setUp(self):
