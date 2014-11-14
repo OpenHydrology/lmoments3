@@ -10,7 +10,7 @@ class TestKap(unittest.TestCase):
                        'scale': 17.0127900,
                        'k': 0.9719618,
                        'h': 2.4727933}
-        cls.distribution = distr.Kappa(**correct_fit)
+        cls.distribution = distr.kap(**correct_fit)
 
     def test_qua_twenty(self):
         result = self.distribution.ppf(0.2)
@@ -41,7 +41,7 @@ class TestWak(unittest.TestCase):
                        'beta': 0.14,
                        'gamma': 0,
                        'delta': 0}
-        cls.distribution = distr.Wakeby(**correct_fit)
+        cls.distribution = distr.wak(**correct_fit)
 
     def test_qua_twenty(self):
         result = self.distribution.ppf(0.2)

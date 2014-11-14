@@ -17,7 +17,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 import numpy as np
 import scipy as sp
 import math
@@ -56,8 +55,7 @@ class KappaGen(sp.stats.rv_continuous):
         y = np.where(k == 0, -np.log(y), (1. - y ** k) / k)
         return y
 
-
-Kappa = KappaGen(name='kappa', shapes='k,h')
+kap = KappaGen(name='kappa', shapes='k, h')
 
 
 class WakebyGen(sp.stats.rv_continuous):
@@ -192,5 +190,4 @@ class WakebyGen(sp.stats.rv_continuous):
         f = t ** (d + 1) / (t ** (b + d) + c)
         return f
 
-
-Wakeby = WakebyGen(name='wakeby', shapes='beta, gamma, delta')
+wak = WakebyGen(name='wakeby', shapes='beta, gamma, delta')
