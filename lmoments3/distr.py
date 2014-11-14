@@ -99,8 +99,8 @@ class WakebyGen(sp.stats.rv_continuous):
         ZINCMX = 3
         ZMULT = 0.2
         UFL = -170
-        XI = 0
-        A = 1
+        XI = 0  # sp.stats.rv_continuous deals with scaling
+        A = 1   # sp.stats.rv_continuous deals with scaling
         B, C, D = para
 
         CDFWAK = 0

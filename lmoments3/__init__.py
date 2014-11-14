@@ -182,7 +182,7 @@ def _samlmusmall(x, nmom=5):
 
     # First L-moment
 
-    l1 = sum(x) / sp.misc.comb(n, 1, exact=True)
+    l1 = np.sum(x) / sp.misc.comb(n, 1, exact=True)
 
     if nmom == 1:
         return l1
@@ -194,8 +194,7 @@ def _samlmusmall(x, nmom=5):
     sum_xtrans = sum([(comb1[i] - comb1[n - i - 1]) * x[i] for i in range(n)])
     l2 = coefl2 * sum_xtrans
 
-    if nmom == 2:
-        return [l1, l2]
+    if nmom == 2:    return [l1, l2]
 
     # Third L-moment
 
