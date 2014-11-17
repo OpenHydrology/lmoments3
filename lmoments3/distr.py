@@ -19,7 +19,18 @@
 
 import numpy as np
 import scipy as sp
+from scipy import stats
 import math
+
+exp = stats.expon
+gam = stats.gamma
+gev = stats.genextreme
+glo = stats.genlogistic
+gpa = stats.genpareto
+gum = stats.gumbel_r
+nor = stats.norm
+pe3 = stats.pearson3
+wei = stats.weibull_max
 
 
 class KappaGen(sp.stats.rv_continuous):

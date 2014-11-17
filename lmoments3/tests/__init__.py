@@ -1,10 +1,12 @@
 import unittest
 import lmoments3 as lm
+from lmoments3 import distr
 from numpy.testing import assert_almost_equal
 
 
-class AbstractDistributionTestCase(unittest.TestCase):
+class DistributionTestCase(unittest.TestCase):
     dist = None
+    distr_f = None
     inputs_qua = [0.2, 0.5, 0.8]
     inputs_cdf = [2, 5, 8]
     inputs_pdf = [4, 5, 6, 7]
@@ -13,8 +15,11 @@ class AbstractDistributionTestCase(unittest.TestCase):
     def setUpClass(cls):
         testdata = [2.0, 3.0, 4.0, 2.4, 5.5, 1.2, 5.4, 2.2, 7.1, 1.3, 1.5]
         cls.lmu = lm.samlmu(testdata)
-
-        super(AbstractDistributionTestCase, cls).setUpClass()
+        try:
+            cls.distr_f = getattr(distr, cls.dist)
+        except TypeError:
+            cls.distr_f = None
+        super(DistributionTestCase, cls).setUpClass()
 
     def assertAlmostEqual(self, first, second, places=6):
         return assert_almost_equal(first, second, decimal=places)

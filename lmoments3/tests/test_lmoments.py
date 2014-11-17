@@ -1,7 +1,7 @@
 import unittest
 from numpy.testing import assert_almost_equal
 import lmoments3 as lm
-from lmoments3.tests import AbstractDistributionTestCase
+from lmoments3.tests import DistributionTestCase
 
 
 class TestLmoments(unittest.TestCase):
@@ -19,7 +19,7 @@ class TestLmoments(unittest.TestCase):
         # TODO: assert something
 
 
-class TestExp(AbstractDistributionTestCase):
+class TestExp(DistributionTestCase):
     dist = 'exp'
     correct_fit = [0.9527273, 2.2836364]
     correct_qua = [1.462306, 2.535623, 4.628098]
@@ -29,7 +29,7 @@ class TestExp(AbstractDistributionTestCase):
     correct_lmom = [3.2363636, 1.1418182, 0.3806061, 0.1903030, 0.1141818]
 
 
-class TestGam(AbstractDistributionTestCase):
+class TestGam(DistributionTestCase):
     dist = 'gam'
     correct_fit = [2.295206, 1.410054]
     correct_qua = [1.447838, 2.780422, 4.766705]
@@ -39,7 +39,7 @@ class TestGam(AbstractDistributionTestCase):
     correct_lmom = [3.2363636, 1.1418181, 0.2496342, 0.1584540]
 
 
-class TestGev(AbstractDistributionTestCase):
+class TestGev(DistributionTestCase):
     dist = 'gev'
     correct_fit = [2.1792884, 1.3956404, -0.1555609]
     correct_qua = [1.539112, 2.705672, 4.537048]
@@ -49,7 +49,7 @@ class TestGev(AbstractDistributionTestCase):
     correct_lmom = [3.2363636, 1.1418182, 0.3127273, 0.2281879, 0.1209980]
 
 
-class TestGlo(AbstractDistributionTestCase):
+class TestGlo(DistributionTestCase):
     dist = 'glo'
     correct_fit = [2.7406580, 1.0060517, -0.2738854]
     correct_qua = [1.580189, 2.740658, 4.437061]
@@ -59,7 +59,7 @@ class TestGlo(AbstractDistributionTestCase):
     correct_lmom = [3.2363636, 1.1418182, 0.3127273, 0.2616792]
 
 
-class TestGno(AbstractDistributionTestCase):
+class TestGno(DistributionTestCase):
     dist = 'gno'
     correct_fit = [2.6888917, 1.7664322, -0.5707506]
     correct_qua = [1.508372, 2.688892, 4.597378]
@@ -69,7 +69,7 @@ class TestGno(AbstractDistributionTestCase):
     correct_lmom = [3.2363636, 1.1418182, 0.3127266, 0.2076140, 0.1104614]
 
 
-class TestGpa(AbstractDistributionTestCase):
+class TestGpa(DistributionTestCase):
     dist = 'gpa'
     correct_fit = [0.7928727, 2.7855796, 0.1400000]
     correct_qua = [1.404848, 2.632964, 4.806899]
@@ -79,7 +79,7 @@ class TestGpa(AbstractDistributionTestCase):
     correct_lmom = [3.23636364, 1.14181818, 0.31272727, 0.14050066, 0.07817741]
 
 
-class TestGum(AbstractDistributionTestCase):
+class TestGum(DistributionTestCase):
     dist = 'gum'
     correct_fit = [2.285519, 1.647295]
     correct_qua = [1.501596, 2.889274, 4.756363]
@@ -89,7 +89,7 @@ class TestGum(AbstractDistributionTestCase):
     correct_lmom = [3.2363635, 1.1418182, 0.1940235, 0.1717009, 0.0637914]
 
 
-class TestKap(AbstractDistributionTestCase):
+class TestKap(DistributionTestCase):
     dist = 'kap'
     correct_fit = [-9.0633543, 17.0127900, 0.9719618, 2.4727933]
     correct_qua = [1.311688, 2.454434, 5.286237]
@@ -99,7 +99,7 @@ class TestKap(AbstractDistributionTestCase):
     correct_lmom = [3.236364, 1.141818, 0.09662925, 0.008239735, 0.00005919404]
 
 
-class TestNor(AbstractDistributionTestCase):
+class TestNor(DistributionTestCase):
     dist = 'nor'
     correct_fit = [3.236364, 2.023820]
     correct_qua = [1.533074, 3.236364, 4.939654]
@@ -109,7 +109,7 @@ class TestNor(AbstractDistributionTestCase):
     correct_lmom = [3.2363636, 1.1418182, 0.0000000, 0.1399889, 0.0000000]
 
 
-class TestPe3(AbstractDistributionTestCase):
+class TestPe3(DistributionTestCase):
     dist = 'pe3'
     correct_fit = [3.236364, 2.199489, 1.646184]
     correct_qua = [1.447672, 2.663015, 4.705896]
@@ -119,7 +119,7 @@ class TestPe3(AbstractDistributionTestCase):
     correct_lmom = [3.2363636, 1.1418182, 0.3127263, 0.1711432]
 
 
-class TestWak(AbstractDistributionTestCase):
+class TestWak(DistributionTestCase):
     dist = 'wak'
     correct_fit = [0.7928727, 2.7855796, 0.1400000, 0.0000000, 0.0000000]
     correct_qua = [1.404848, 2.632964, 4.806899]
@@ -129,7 +129,7 @@ class TestWak(AbstractDistributionTestCase):
     correct_lmom = [3.23636364, 1.14181818, 0.31272727, 0.14050066, 0.07817741]
 
 
-class TestWei(AbstractDistributionTestCase):
+class TestWei(DistributionTestCase):
     dist = 'wei'
     correct_fit = [0.6740393, 2.7087887, 1.1750218]
     correct_qua = [1.429808, 2.656981, 4.735337]

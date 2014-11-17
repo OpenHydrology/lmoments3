@@ -84,10 +84,6 @@ def _is_numeric(obj):
             return True
 
 
-def _comb(N, k):
-    return sp.misc.comb(N, k, exact=True)
-
-
 def samlmu(x, nmom=5):
     """
     Estimate `nmom` number of L-moments.
@@ -105,65 +101,61 @@ def samlmu(x, nmom=5):
     else:
         return _samlmularge(x, nmom)
 
-##LARGE can be used to calculate samlmu when nmom > 5, less efficient
-##than samlmusmall.
-def _samlmularge(x,nmom=5):
-    checkx = []
-    for i in x:
-        if _is_numeric(i):
-            checkx.append(i)
-    x = checkx
-    if nmom <= 0:
-        return("Invalid number of Sample L-Moments")
 
-    x = sorted(x)
-    n = len(x)
+def _samlmularge(x, nmom=5):
+    try:
+        x = np.asarray(x, dtype=np.float64)
+        n = len(x)
+        x.sort()
+    except ValueError:
+        raise ValueError("Input data to estimate L-moments must be numeric.")
+
+    if nmom <= 0:
+        raise ValueError("Invalid number of sample L-moments")
 
     if n < nmom:
-        return("Insufficient length of data for specified nmoments")
+        raise ValueError("Insufficient length of data for specified nmoments")
+
     ##Calculate first order
-    ##Pretty efficient, no loops
-    coefl1 = 1.0/_comb(n,1)
-    suml1 = sum(x)
-    l = [coefl1*suml1]
+    l = [np.sum(x) / sp.misc.comb(n, 1, exact=True)]
 
     if nmom == 1:
-        return(l[0])
+        return l[0]
 
     #Setup comb table, where comb[i][x] refers to comb(x,i)
     comb = []
-    for i in range(1,nmom):
+    for i in range(1, nmom):
         comb.append([])
         for j in range(n):
-            comb[-1].append(_comb(j,i))
+            comb[-1].append(sp.misc.comb(j, i, exact=True))
 
-    for mom in range(2,nmom+1):
-        coefl = 1.0/mom * 1.0/_comb(n,mom)
+    for mom in range(2, nmom + 1):
+        coefl = 1.0 / mom * 1.0 / sp.misc.comb(n, mom, exact=True)
         xtrans = []
-        for i in range(0,n):
+        for i in range(0, n):
             coeftemp = []
-            for j in range(0,mom):
+            for j in range(0, mom):
                 coeftemp.append(1)
 
-            for j in range(0,mom-1):
-                coeftemp[j] = coeftemp[j]*comb[mom-j-2][i]
+            for j in range(0, mom - 1):
+                coeftemp[j] = coeftemp[j] * comb[mom - j - 2][i]
 
-            for j in range(1,mom):
-                coeftemp[j] = coeftemp[j]*comb[j-1][n-i-1]
+            for j in range(1, mom):
+                coeftemp[j] = coeftemp[j] * comb[j - 1][n - i - 1]
 
-            for j in range(0,mom):
-                coeftemp[j] = coeftemp[j]*_comb(mom-1,j)
+            for j in range(0, mom):
+                coeftemp[j] = coeftemp[j] * sp.misc.comb(mom - 1, j, exact=True)
 
-            for j in range(0,int(0.5*mom)):
-                coeftemp[j*2+1] = -coeftemp[j*2+1]
+            for j in range(0, int(0.5 * mom)):
+                coeftemp[j * 2 + 1] = -coeftemp[j * 2 + 1]
             coeftemp = sum(coeftemp)
-            xtrans.append(x[i]*coeftemp)
+            xtrans.append(x[i] * coeftemp)
 
         if mom > 2:
-            l.append(coefl*sum(xtrans)/l[1])
+            l.append(coefl * sum(xtrans) / l[1])
         else:
-            l.append(coefl*sum(xtrans))
-    return(l)
+            l.append(coefl * sum(xtrans))
+    return l
 
 
 def _samlmusmall(x, nmom=5):
