@@ -27,7 +27,8 @@ class DistributionTestCase(unittest.TestCase):
         if self.dist:
             f = getattr(lm, 'pel' + self.dist)
             fit = f(self.lmu)
-            self.assertAlmostEqual(fit, self.correct_fit)
+            for para in iter(self.paras):
+                self.assertAlmostEqual(fit[para], self.paras[para])
 
     def test_lmom(self):
         if self.dist:

@@ -12,8 +12,8 @@ def pelexp(xmom):
         print("L-Moments Invalid")
         return
     else:
-        para = [xmom[0]-2*xmom[1],2*xmom[1]]
-        return(para)
+        para = {'loc': xmom[0] - 2 * xmom[1], 'scale': 2 * xmom[1]}
+        return para
 
 #############################################################
 
@@ -37,8 +37,8 @@ def pelgam(xmom):
         T=_sp.pi*CV**2
         ALPHA=(1+A1*T)/(T*(1+T*(A2+T*A3)))
         
-    para = [ALPHA,xmom[0]/ALPHA]
-    return(para)
+    para = {'a': ALPHA, 'scale': xmom[0]/ALPHA}
+    return para
 
 #############################################################
 
@@ -75,7 +75,7 @@ def pelgev(xmom):
             para2=xmom[1]*G/(GAM*(1-2**(-G)))
             para1=xmom[0]-para2*(1-GAM)/G
             para = [para1,para2,para3]
-            return(para)
+            return para
 
         if T3 <= -0.97:
             G = 1-_sp.log(1+T3)/DL2
@@ -96,7 +96,7 @@ def pelgev(xmom):
                 para2=xmom[1]*G/(GAM*(1-2**(-G)))
                 para1=xmom[0]-para2*(1-GAM)/G
                 para = [para1,para2,para3]
-                return(para)
+                return para
             
         print("Iteration has not converged")
 
@@ -105,15 +105,15 @@ def pelgev(xmom):
     if abs(G)<SMALL:
         para2 = xmom[1]/DL2
         para1 = xmom[0]-EU*para2
-        para = [para1,para2,0]
-        return(para)
+        para = {'loc': para1, 'scale': para2, 'c': 0}
+        return para
     else:
         para3 = G
         GAM = _sp.exp(_sp.special.gammaln(1+G))
         para2=xmom[1]*G/(GAM*(1-2**(-G)))
         para1=xmom[0]-para2*(1-GAM)/G
-        para = [para1,para2,para3]
-        return(para)
+        para = {'loc': para1, 'scale': para2, 'c': para3}
+        return para
  
 #############################################################
 
@@ -127,13 +127,13 @@ def pelglo(xmom):
 
     if abs(G)<= SMALL:
         para = [xmom[0],xmom[1],0]
-        return(para)
+        return para
 
     GG = G*_sp.pi/_sp.sin(G*_sp.pi)
     A = xmom[1]/GG
     para1 = xmom[0]-A*(1-GG)/G
-    para = [para1,A,G]
-    return(para)
+    para = {'loc': para1, 'scale': A, 'k': G}
+    return para
 
 #############################################################
 
@@ -153,7 +153,7 @@ def pelgno(xmom):
         return
     if abs(T3)>= 0.95:
         para = [0,-1,0]
-        return(para)
+        return para
 
     if abs(T3)<= SMALL:
         para =[xmom[0],xmom[1]*_sp.sqrt(_sp.pi),0] 
@@ -163,8 +163,8 @@ def pelgno(xmom):
     E=_sp.exp(0.5*G**2)
     A=xmom[1]*G/(E*_sp.special.erf(0.5*G))
     U=xmom[0]+A*(E-1)/G
-    para = [U,A,G]
-    return(para)
+    para = {'loc': U, 'scale': A, 'k': G}
+    return para
 
 #############################################################
 
@@ -182,8 +182,11 @@ def pelgpa(xmom):
     PARA3=G
     PARA2=(1+G)*(2+G)*xmom[1]
     PARA1=xmom[0]-PARA2/(1+G)
-    para = [PARA1,PARA2,PARA3]
-    return(para)
+
+    # CHANGE: shape parameter `c` has been negated from original `lmoments` package to be compatible with scipy's GPA
+    # distribution function.
+    para = {'loc': PARA1, 'scale': PARA2, 'c': -PARA3}
+    return para
 
 #############################################################
 
@@ -195,8 +198,8 @@ def pelgum(xmom):
     else:
         para2 = xmom[1]/_sp.log(2)
         para1 = xmom[0]-EU*para2
-        para = [para1, para2]
-        return(para)
+        para = {'loc': para1, 'scale': para2}
+        return para
 
 #############################################################
 
@@ -291,7 +294,7 @@ def pelkap(xmom):
             HH = _sp.exp(TEMP)
             para[1] = xmom[1]*G*HH/(ALAM2*GAM)
             para[0] = xmom[0]-para[1]/G*(1-GAM*U1/HH)
-            return(para)
+            return {'loc': para[0], 'scale': para[1], 'k': para[2], 'h': para[3]}
         else:
             XG=G
             XH=H
@@ -368,8 +371,8 @@ def pelnor(xmom):
         print("L-Moments Invalid")
         return
     else:
-        para = [xmom[0],xmom[1]*_sp.sqrt(_sp.pi)]
-        return(para)
+        para = {'loc': xmom[0], 'scale': xmom[1]*_sp.sqrt(_sp.pi)}
+        return para
 
 #############################################################
     
@@ -389,16 +392,14 @@ def pelpe3(xmom):
 
     T3=abs(xmom[2])
     if xmom[1] <= 0 or T3 >= 1:
-        para = [0]*3
-        print("L-Moments Invalid")
-        return(para)
+        raise ValueError("L-Moments Invalid")
 
     if T3<= Small:
         para = []
         para.append(xmom[0])
         para.append(xmom[1]*_sp.sqrt(_sp.pi))
         para.append(0)
-        return(para)
+        return {'loc': para[0], 'scale': para[1], 'skew': para[2]}
 
     if T3 >= (1.0/3):
         T = 1-T3
@@ -416,7 +417,7 @@ def pelpe3(xmom):
     if xmom[2] < 0:
         para[2]=-para[2]
 
-    return(para)
+    return {'loc': para[0], 'scale': para[1], 'skew': para[2]}
 
 #############################################################
 
@@ -476,8 +477,8 @@ def pelwak(xmom):
             C = 0
             D = 0
 
-    para =[XI,A,B,C,D]
-    return(para)
+    para = {'loc': XI, 'scale': A, 'beta': B, 'gamma': C, 'delta': D}
+    return para
 
 
 #############################################################
@@ -491,5 +492,5 @@ def pelwei(xmom):
     pg = pelgev([-xmom[0],xmom[1],-xmom[2]])
     delta = 1/pg[2]
     beta = pg[1]/pg[2]
-    out = [-pg[0]-beta,beta,delta]
-    return(out)
+    para = {'loc': -pg[0]-beta, 'scale': beta, 'c': delta}
+    return para

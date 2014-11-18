@@ -1,6 +1,7 @@
 import unittest
 from numpy.testing import assert_almost_equal
 import lmoments3 as lm
+from lmoments3 import stats
 from lmoments3.tests import DistributionTestCase
 
 
@@ -14,8 +15,8 @@ class TestLmoments(unittest.TestCase):
     def test_nlogn(self):
         data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 2.4, 3.5, 1.4, 6.5, 1.2, 6.8, 5.4, 3.4]
         gamfit = lm.pelgam(lm.samlmu(data, 5))
-        test1 = lm.NlogL(data, "GAM", gamfit)
-        test2 = lm.NlogL(data, "GAM")
+        test1 = stats.NlogL(data, 'gam', gamfit)
+        test2 = stats.NlogL(data, "GAM")
         # TODO: assert something
 
 
