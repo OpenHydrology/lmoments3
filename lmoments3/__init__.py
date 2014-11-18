@@ -63,23 +63,6 @@ from ._pelxxx import *
 from ._lmomxxx import *
 
 
-def _is_numeric(obj):
-    try:
-        obj+obj, obj-obj, obj*obj, obj**obj, obj/obj
-    except ZeroDivisionError:
-        return True
-    except Exception:
-        return False
-    else:
-        try:
-            a = len(obj)
-            if a == 1:
-                return True
-            return False
-        except:
-            return True
-
-
 def samlmu(x, nmom=5):
     """
     Estimate `nmom` number of L-moments.
