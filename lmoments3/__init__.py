@@ -58,13 +58,9 @@ Licensing for Python Translation:
 
 import scipy as sp
 import numpy as np
-from ._cdfxxx import *
 from ._lmrxxx import *
 from ._pelxxx import *
-from ._quaxxx import *
-from ._pdfxxx import *
 from ._lmomxxx import *
-from ._randxxx import *
 
 
 def _is_numeric(obj):

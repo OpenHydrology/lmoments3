@@ -25,15 +25,72 @@ import math
 exp = stats.expon
 gam = stats.gamma
 gev = stats.genextreme
-glo = stats.genlogistic
 gpa = stats.genpareto
 gum = stats.gumbel_r
 nor = stats.norm
 pe3 = stats.pearson3
-wei = stats.weibull_max
+wei = stats.weibull_min
 
 
-class KappaGen(sp.stats.rv_continuous):
+class GlogisticGen(stats.rv_continuous):
+    """
+    The CDF is given by
+
+    .. math::
+       F(x;k) = \\frac{1}{1 + \left[1 - kx\\right]^{1/k}}
+    """
+
+    numargs = 1
+
+    def _argcheck(self, k):
+        return (k == k)
+
+    def _cdf(self, x, k):
+        u = np.where(k == 0, np.exp(-x), (1. - k * x) ** (1. / k))
+        return 1. / (1. + u)
+
+    def _pdf(self, x, k):
+        u = np.where(k == 0, np.exp(-x), (1. - k * x) ** (1. / k))
+        return u ** (1. - k) / (1. + u) ** 2
+
+    def _ppf(self, q, k):
+        F = q / (1. - q)
+        return np.where(k == 0, np.log(F), (1 - F ** (-k)) / k)
+
+
+glo = GlogisticGen(name='glogistic', shapes='k')
+
+
+class GennormGen(stats.rv_continuous):
+    """
+    The CDF is given by
+
+    .. math::
+       F(x) = \Phi{\left[ -k^{-1} \log\{1 - kx\} \\right]}
+    """
+
+    numargs = 1
+
+    def _argcheck(self, k):
+        return (k == k)
+
+    def _cdf(self, x, k):
+        y = np.where(k == 0, x, -np.log(1. - k * x) / k)
+        return 0.5 * (1 + sp.special.erf(y * np.sqrt(0.5)))
+
+    def _pdf(self, x, k):
+        u = np.where(k == 0, x, -np.log(1. - k * x) / k)
+        return np.exp(k * u - u * u / 2.) / np.sqrt(2 * np.pi)
+
+    def _ppf(self, q, k):
+        u = sp.special.ndtri(q)  # Normal distribution's ppf
+        return np.where(k == 0, u, (1. - np.exp(-k * u)) / k)
+
+
+gno = GennormGen(name='gennorm', shapes='k')
+
+
+class KappaGen(stats.rv_continuous):
     """
     The CDF is given by
 
@@ -66,10 +123,11 @@ class KappaGen(sp.stats.rv_continuous):
         y = np.where(k == 0, -np.log(y), (1. - y ** k) / k)
         return y
 
+
 kap = KappaGen(name='kappa', shapes='k, h')
 
 
-class WakebyGen(sp.stats.rv_continuous):
+class WakebyGen(stats.rv_continuous):
     """
     The Wakeby distribution is defined by the transformation:
     (x-xi)/a = (1/b).[1 - (1-U)^b] - (c/d).[1 - (1-U)^(-d)]
@@ -108,8 +166,8 @@ class WakebyGen(sp.stats.rv_continuous):
         ZINCMX = 3
         ZMULT = 0.2
         UFL = -170
-        XI = 0  # sp.stats.rv_continuous deals with scaling
-        A = 1   # sp.stats.rv_continuous deals with scaling
+        XI = 0  # stats.rv_continuous deals with scaling
+        A = 1  # stats.rv_continuous deals with scaling
         B, C, D = para
 
         CDFWAK = 0
@@ -200,5 +258,6 @@ class WakebyGen(sp.stats.rv_continuous):
         t = (1. - self._cdf(x, b, c, d))
         f = t ** (d + 1) / (t ** (b + d) + c)
         return f
+
 
 wak = WakebyGen(name='wakeby', shapes='beta, gamma, delta')
