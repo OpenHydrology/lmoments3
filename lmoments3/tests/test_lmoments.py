@@ -12,12 +12,13 @@ class TestLmoments(unittest.TestCase):
         result = lm.samlmu(testdata)
         assert_almost_equal(result, expected)
 
-    def test_nlogn(self):
+    def test_aic(self):
         data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 2.4, 3.5, 1.4, 6.5, 1.2, 6.8, 5.4, 3.4]
         gamfit = lm.pelgam(lm.samlmu(data, 5))
-        test1 = stats.NlogL(data, 'gam', gamfit)
-        test2 = stats.NlogL(data, "GAM")
-        # TODO: assert something
+        test1 = stats.AIC(data, 'gam', gamfit)
+        test2 = stats.AIC(data, "GAM")
+        self.assertAlmostEqual(test1, test2)
+        # TODO: assert something better
 
 
 class TestExp(DistributionTestCase):
@@ -29,17 +30,22 @@ class TestExp(DistributionTestCase):
     correct_cdf = [0.3678311, 0.8300571, 0.9543151]
     correct_pdf = [0.11530621, 0.07441766, 0.04802853, 0.03099720]
     correct_lmom = [3.2363636, 1.1418182, 0.3806061, 0.1903030, 0.1141818]
+    correct_nlogl = 20.0834598
 
 
 class TestGam(DistributionTestCase):
     dist = 'gam'
-    paras = {'a': 2.295206, 'scale': 1.410054}
+    # The location parameter is not used for the gamma distribution, so len(paras) should actually return 2, for example
+    # for calculating degrees of freedom etc.
+    # TODO: find a nice way of dealing with this issue
+    paras = {'a': 2.295206, 'loc': 0, 'scale': 1.410054}
     correct_fit = [2.295206, 1.410054]
     correct_qua = [1.447838, 2.780422, 4.766705]
     correct_lmr = [3.2363636, 1.1418181, 0.2186287, 0.1387734]
     correct_cdf = [0.3278764, 0.8222726, 0.9653452]
     correct_pdf = [0.13789672, 0.09058866, 0.05644576, 0.03391116]
     correct_lmom = [3.2363636, 1.1418181, 0.2496342, 0.1584540]
+    correct_nlogl = 21.2839951
 
 
 class TestGev(DistributionTestCase):
@@ -51,6 +57,7 @@ class TestGev(DistributionTestCase):
     correct_cdf = [0.3202800, 0.8415637, 0.9606184]
     correct_pdf = [0.13388363, 0.07913309, 0.04637529, 0.02757391]
     correct_lmom = [3.2363636, 1.1418182, 0.3127273, 0.2281879, 0.1209980]
+    correct_nlogl = 21.2807575
 
 
 class TestGlo(DistributionTestCase):
@@ -62,6 +69,7 @@ class TestGlo(DistributionTestCase):
     correct_cdf = [0.3052960, 0.8519915, 0.9624759]
     correct_pdf = [0.14033225, 0.07760825, 0.04294245, 0.02463028]
     correct_lmom = [3.2363636, 1.1418182, 0.3127273, 0.2616792]
+    correct_nlogl = 21.6538832
 
 
 class TestGno(DistributionTestCase):
@@ -73,6 +81,7 @@ class TestGno(DistributionTestCase):
     correct_cdf = [0.3295539, 0.8357710, 0.9599970]
     correct_pdf = [0.13099439, 0.08020770, 0.04842820, 0.02933547]
     correct_lmom = [3.2363636, 1.1418182, 0.3127266, 0.2076140, 0.1104614]
+    correct_nlogl = 21.1009750
 
 
 class TestGpa(DistributionTestCase):
@@ -84,6 +93,7 @@ class TestGpa(DistributionTestCase):
     correct_cdf = [0.3604888, 0.8167330, 0.9597484]
     correct_pdf = [0.12194724, 0.08343282, 0.05567275, 0.03610412]
     correct_lmom = [3.23636364, 1.14181818, 0.31272727, 0.14050066, 0.07817741]
+    correct_nlogl = 20.5492690
 
 
 class TestGum(DistributionTestCase):
@@ -95,6 +105,7 @@ class TestGum(DistributionTestCase):
     correct_cdf = [0.3044484, 0.8249232, 0.9693322]
     correct_pdf = [0.15060460, 0.09638151, 0.05733088, 0.03276992]
     correct_lmom = [3.2363635, 1.1418182, 0.1940235, 0.1717009, 0.0637914]
+    correct_nlogl = 21.7261232
 
 
 class TestKap(DistributionTestCase):
@@ -106,6 +117,7 @@ class TestKap(DistributionTestCase):
     correct_cdf = [0.4185230, 0.7772538, 0.9769973]
     correct_pdf = [0.09794121, 0.08128701, 0.07022161, 0.06197593]
     correct_lmom = [3.236364, 1.141818, 0.09662925, 0.008239735, 0.00005919404]
+    correct_nlogl = 18.2664498
 
 
 class TestNor(DistributionTestCase):
@@ -117,6 +129,7 @@ class TestNor(DistributionTestCase):
     correct_cdf = [0.2706309, 0.8082428, 0.9907083]
     correct_pdf = [0.18357864, 0.13484509, 0.07759170, 0.03497539]
     correct_lmom = [3.2363636, 1.1418182, 0.0000000, 0.1399889, 0.0000000]
+    correct_nlogl = 22.6955677
 
 
 class TestPe3(DistributionTestCase):
@@ -128,6 +141,7 @@ class TestPe3(DistributionTestCase):
     correct_cdf = [0.3462110, 0.8258929, 0.9597978]
     correct_pdf = [0.12681904, 0.08243435, 0.05226950, 0.03260397]
     correct_lmom = [3.2363636, 1.1418182, 0.3127263, 0.1711432]
+    correct_nlogl = 20.8203581
 
 
 class TestWak(DistributionTestCase):
@@ -139,6 +153,7 @@ class TestWak(DistributionTestCase):
     correct_cdf = [0.3604888, 0.8167330, 0.9597484]
     correct_pdf = [0.12194724, 0.08343282, 0.05567275, 0.03610412]
     correct_lmom = [3.23636364, 1.14181818, 0.31272727, 0.14050066, 0.07817741]
+    correct_nlogl = 20.549269
 
 
 class TestWei(DistributionTestCase):
@@ -153,3 +168,4 @@ class TestWei(DistributionTestCase):
     # New values taken from R, using `dweibull(x-0.6740393, shape=1.1750218, scale=2.7087887)`
     correct_pdf = [0.12592833, 0.08318826, 0.05339457, 0.03351231]
     correct_lmom = [1.88828496, 1.14181818, 0.31272723, 0.16137985, 0.09159867]
+    correct_nlogl = 20.749053

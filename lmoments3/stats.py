@@ -22,88 +22,61 @@ from . import distr
 import lmoments3 as lm
 
 
-def NlogL(data, distr_name, distr_paras={}):
+def neg_log_lik(x, distr_name, distr_paras={}):
+    """
+    Calculate the negative log likelihood of a dataset with a distribution
+    :param x: fitted dataset
+    :type x: array-like
+    :param distr_name: 3-letter code of distribution function, e.g. `exp`
+    :type distr_name: str
+    :param distr_paras: the distribution function's parameters (optional). If not provided, the data will be fitted
+                        using the L-moments method.
+    :type distr_paras: dict
+    :return: negative log likelihood
+    :type: float
+    """
+    x = sp.asarray(x)
     distr_name = distr_name.lower()  # Ignore case
 
-    # Fit data to estimate distribution function parameters, if not provided
+    # Fit x to estimate distribution function parameters, if not provided
     if not distr_paras:
-        lmoms = lm.samlmu(data)
+        lmoms = lm.samlmu(x)
         pel_f = getattr(lm, 'pel' + distr_name)
         distr_paras = pel_f(lmoms)
 
     distr_f = getattr(distr, distr_name)  # scipy rv_continous class
-    L = distr_f(**distr_paras).pdf(data)
-    NLL = -sum(sp.log(L))
-    return NLL
+    nll = distr_f.nnlf(theta=list(distr_paras.values()), x=x)
+    return nll
 
 
-def NumParam(dist):
-    if dist == "EXP":
-        return (2)
-    elif dist == "GAM":
-        return (2)
-    elif dist == "GEV":
-        return (3)
-    elif dist == "GLO":
-        return (3)
-    elif dist == "GNO":
-        return (3)
-    elif dist == "GPA":
-        return (3)
-    elif dist == "GUM":
-        return (2)
-    elif dist == "KAP":
-        return (4)
-    elif dist == "NOR":
-        return (2)
-    elif dist == "PE3":
-        return (3)
-    elif dist == "WAK":
-        return (5)
-    elif dist == "WEI":
-        return (3)
+def distr_n_params(distr_name):
+    distr_f = getattr(distr, distr_name)
+    return distr_f.numargs + 2  # Include location and scale in addition to shape parameters
 
 
-def AIC(data, dist, *args):
-    if len(args) >= 2:
-        print('Invalid Number of Arguments')
-        return ()
-    elif len(args) == 1:
-        peldist = args[0]
-        NLL = NlogL(data, dist, peldist)
-        k = len(peldist)
-        AIC = 2 * k + 2 * NLL
-        return (AIC)
-    else:
-        NLL = NlogL(data, dist)
-        k = NumParam(dist)
-        AIC = 2 * k + 2 * NLL
-        return (AIC)
+def AIC(x, distr_name, distr_paras={}):
+    distr_name = distr_name.lower()  # Ignore case
+
+    NLL = neg_log_lik(x, distr_name, distr_paras)
+    k = distr_n_params(distr_name)
+    AIC = 2 * k + 2 * NLL
+    return AIC
 
 
-def AICc(data, dist, *args):
-    if len(args) == 0:
-        AICbase = AIC(data, dist)
-    else:
-        AICbase = AIC(data, dist, *args)
-    k = NumParam(dist)
-    diff = 2 * k * (k + 1) / (len(data) - k - 1)
+def AICc(x, distr_name, distr_paras={}):
+    distr_name = distr_name.lower()  # Ignore case
+
+    AICbase = AIC(x, distr_name, distr_paras)
+    k = distr_n_params(distr_name)
+    diff = 2 * k * (k + 1) / (len(x) - k - 1)
     AICc = AICbase + diff
-    return (AICc)
+    return AICc
 
 
-def BIC(data, dist, *args):
-    if len(args) >= 2:
-        print('Invalid Number of Arguments')
-        return ()
-    elif len(args) == 1:
-        peldist = args[0]
-        NLL = NlogL(data, dist, peldist)
-        k = len(peldist)
-        BIC = k * sp.log(len(data)) + 2 * NLL
-        return (BIC)
-    else:
-        NLL = NlogL(data, dist)
-        k = NumParam(dist)
-        BIC = k * sp.log(len(data)) + 2 * NLL
-        return (BIC)
+def BIC(x, distr_name, distr_paras={}):
+    distr_name = distr_name.lower()  # Ignore case
+
+    NLL = neg_log_lik(x, distr_name, distr_paras)
+    k = distr_n_params(distr_name)
+    BIC = k * sp.log(len(x)) + 2 * NLL
+    return BIC

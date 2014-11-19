@@ -1,6 +1,7 @@
 import unittest
 import lmoments3 as lm
 from lmoments3 import distr
+from lmoments3 import stats
 from numpy.testing import assert_almost_equal
 
 
@@ -14,14 +15,19 @@ class DistributionTestCase(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        testdata = [2.0, 3.0, 4.0, 2.4, 5.5, 1.2, 5.4, 2.2, 7.1, 1.3, 1.5]
-        cls.lmu = lm.samlmu(testdata)
+        cls.testdata = [2.0, 3.0, 4.0, 2.4, 5.5, 1.2, 5.4, 2.2, 7.1, 1.3, 1.5]
+        cls.lmu = lm.samlmu(cls.testdata)
         if cls.dist:
             cls.distr_f = getattr(distr, cls.dist)
         super(DistributionTestCase, cls).setUpClass()
 
     def assertAlmostEqual(self, first, second, places=6):
         return assert_almost_equal(first, second, decimal=places)
+
+    def test_n_paras(self):
+        if self.dist:
+            n = stats.distr_n_params(self.dist)
+            self.assertEqual(len(self.paras), n)
 
     def test_fit(self):
         if self.dist:
@@ -41,6 +47,11 @@ class DistributionTestCase(unittest.TestCase):
             f = getattr(lm, 'lmr' + self.dist)
             lmr = f(self.correct_fit, 4)
             self.assertAlmostEqual(lmr, self.correct_lmr)
+
+    def test_nlogl(self):
+        if self.dist:
+            nlogl = stats.neg_log_lik(self.testdata, self.dist)
+            self.assertAlmostEqual(self.correct_nlogl, nlogl)
 
     def test_qua(self):
         if self.distr_f:

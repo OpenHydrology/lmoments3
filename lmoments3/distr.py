@@ -153,10 +153,17 @@ class WakebyGen(stats.rv_continuous):
 
     def _cdf(self, x, b, c, d):
         if hasattr(x, '__iter__'):
-            return np.array([self._cdfwak(_, parameters)
-                             for (_, parameters) in zip(x, zip(b, c, d))])
+            if hasattr(b, '__iter__'):
+                # Assume x, b, c, d are arrays with matching length
+                result = np.array([self._cdfwak(_, parameters)
+                                   for (_, parameters) in zip(x, zip(b, c, d))])
+            else:
+                # Only x is an array, paras are scalars
+                result = np.array([self._cdfwak(_, [b, c, d])
+                                   for _ in x])
         else:
-            return self._cdfwak(x, (b, c, d))
+            result = self._cdfwak(x, (b, c, d))
+        return result
 
     def _cdfwak(self, x, para):
         # Only for a single value of x!
