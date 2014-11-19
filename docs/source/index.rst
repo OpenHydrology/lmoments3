@@ -38,7 +38,7 @@ and predicts the parameter estimates for that function.
 
 Example: Find Wakeby distribution that best fits dataset `data`::
 
-    import lmoments3 as lm as lm
+    import lmoments3 as lm
     para = lm.pelwak(lm.samlmu(data,5))
 
 
