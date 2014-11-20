@@ -2,6 +2,7 @@ import unittest
 from numpy.testing import assert_almost_equal
 import lmoments3 as lm
 from lmoments3 import stats
+from lmoments3 import distr
 from lmoments3.tests import DistributionTestCase
 
 
@@ -19,6 +20,12 @@ class TestLmoments(unittest.TestCase):
         test2 = stats.AIC(data, "GAM")
         self.assertAlmostEqual(test1, test2)
         # TODO: assert something better
+
+    def test_glo_lmom(self):
+        testdata = [2.0, 3.0, 4.0, 2.4, 5.5, 1.2, 5.4, 2.2, 7.1, 1.3, 1.5]
+        paras = distr.glo.lmom_fit(testdata)
+        print(paras)
+
 
 
 class TestExp(DistributionTestCase):
