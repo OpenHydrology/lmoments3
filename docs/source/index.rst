@@ -1,32 +1,70 @@
 lmoments3 Library documentation
 ===============================
 
-This library was designed to use L-moments to predict optimal parameters
-for a number of distributions.  Distributions supported in this file are
-listed below, with their distribution suffix:
+This library was designed to use L-moments to calculate optimal parameters for a number of distributions. This library
+extends a number of :mod:`scipy` distributions and provides some additional distributions frequently used in Extreme
+Value Analyses.
 
-* Exponential (EXP)
-* Gamma (GAM)
-* Generalised Extreme Value (GEV)
-* Generalised Logistic (GLO)
-* Generalised Normal (GNO)
-* Generalised Pareto (GPA)
-* Gumbel (GUM)
-* Kappa (KAP)
-* Normal (NOR)
-* Pearson III (PE3)
-* Wakeby (WAK)
-* Weibull (WEI)
+========================= ================ ============= ========================================
+Name                      `lmoments3` name `scipy` name  Parameters
+========================= ================ ============= ========================================
+Exponential               `exp`            `expon`       `loc`, `scale`
+Gamma                     `gam`            `gamma`       `a`, `loc`, `scale`
+Generalised Extreme Value `gev`            `genextreme`  `c`, `loc`, `scale`
+Generalised Logistic      `glo`            n/a           `k`, `loc`, `scale`
+Generalised Normal        `gno`            n/a           `k`, `loc`, `scale`
+Generalised Pareto        `gpa`            `genpareto`   `c`, `loc`, `scale`
+Gumbel                    `gum`            `gumbel_r`    `loc`, `scale`
+Kappa                     `kap`            n/a           `k`, `h`, `loc`, `scale`
+Normal                    `nor`            `norm`        `loc`, `scale`
+Pearson III               `pe3`            `pearson3`    `skew`, `loc`, `scale`
+Wakeby                    `wak`            n/a           `beta`, `gamma`, `delta`, `loc`, `scale`
+Weibull                   `wei`            `weibull_min` `c`, `loc`, `scale`
+========================= ================ ============= ========================================
 
-The primary function in this file is the :meth:`samlmu(x, nmom)` function, which takes
-an input dataset `x` and input of the number of moments to produce the log
-moments of that dataset.
+All distributions in the table above are included in the :mod:`lmoments3.distr` module.
 
-For Instance, given a list `Data`, if 5 L-moments are needed, the function
-would be called by `lm.samlmu(Data,5)`
+L-moment estimation from sample data
+------------------------------------
 
-In this file contains four different functions for using each distribution.
-Each function can be called by the prefix `FUN` with the suffix `DIS`.
+The primary purpose of this library is to estimate L-moments from a sample dataset.
+
+The method :meth:`lmoments3.samlmu(x, nmom)` takes an input list or `numpy` array `x` and the number of L-moments to
+estimate from the dataset.
+
+Example:
+
+>>> import lmoments3 as lm
+>>> data = [2.0, 3.0, 4.0, 2.4, 5.5, 1.2, 5.4, 2.2, 7.1, 1.3, 1.5]
+>>> lm.samlmu(data, nmom=5)
+[3.2363636363636363, 1.1418181818181818, 0.27388535031847133, 0.023354564755838598, -0.042462845010615709]
+
+This returns the first five sample L-moments, in the structured as l1, l2, t3, t4, t5. Where t3..5 = l3..5 / l2.
+
+Fitting distribution functions to sample data
+---------------------------------------------
+
+Sample data can be fitted directly to statistical distribution functions using the :mod:`lmoments3` library.
+
+For example, using the gamma distribution:
+
+>>> import lmoments3 as lm
+>>> from lmoments3 import distr
+>>> data = [2.0, 3.0, 4.0, 2.4, 5.5, 1.2, 5.4, 2.2, 7.1, 1.3, 1.5]
+>>> paras = distr.gam.lmom_fit(data)
+>>> paras
+OrderedDict([('a', 2.295206110128833), ('loc', 0), ('scale', 1.4100535991436407)])
+
+This returns the distribution's parameters as an :class:`OrderedDict` in the same order as a standard `scipy` list of
+distribution function parameters. The distribution parameters can be used, for example, like this:
+
+>>> fitted_gam = distr.gam(**paras)
+>>> median = fitted_gam.ppf(0.5)
+>>> median
+2.7804212925067344
+
+For full details of distribution function methods, see the
+`scipy.stats documentation <http://docs.scipy.org/doc/scipy/reference/stats.html>`_.
 
 Description of functions
 ------------------------
@@ -38,7 +76,7 @@ and predicts the parameter estimates for that function.
 
 Example: Find Wakeby distribution that best fits dataset `data`::
 
-    import lmoments3 as lm as lm
+    import lmoments3 as lm
     para = lm.pelwak(lm.samlmu(data,5))
 
 

@@ -28,6 +28,11 @@ import lmoments3 as lm
 
 
 class LmomDistrMixin(object):
+    """
+    Mixin class to add L-moment methods to :class:`scipy.stats.rv_continous` distribution functions. Distributions using
+    the mixin should override the methods :meth:`._lmom_fit`, :meth:`.lmom`, and :meth:`.lmom_ratios`.
+    """
+
     def lmom_fit(self, data=[], lmom_ratios=[]):
         """
         Fit the distribution function to the given data or given L-moments.
@@ -83,6 +88,11 @@ class LmomDistrMixin(object):
         raise NotImplementedError
 
 
+"""
+The following distributions are **not** available in :mod:`scipy.stats`.
+"""
+
+
 class GenlogisticGen(LmomDistrMixin, scipy.stats.rv_continuous):
     """
     The CDF is given by
@@ -90,8 +100,6 @@ class GenlogisticGen(LmomDistrMixin, scipy.stats.rv_continuous):
     .. math::
        F(x;k) = \\frac{1}{1 + \left[1 - kx\\right]^{1/k}}
     """
-
-    numargs = 1
 
     def _argcheck(self, k):
         return (k == k)
@@ -139,8 +147,6 @@ class GennormGen(LmomDistrMixin, scipy.stats.rv_continuous):
     .. math::
        F(x) = \Phi{\left[ -k^{-1} \log\{1 - kx\} \\right]}
     """
-
-    numargs = 1
 
     def _argcheck(self, k):
         return (k == k)
@@ -568,6 +574,11 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
 
 
 wak = WakebyGen(name='wakeby', shapes='beta, gamma, delta')
+
+"""
+The following distributions are available in `scipy.stats` and are redefined here with an `LmomDistrMixin` to extend the
+scipy distribution with L-moment methods.
+"""
 
 
 class GenParetoGen(LmomDistrMixin, scipy.stats.distributions.genpareto_gen):
