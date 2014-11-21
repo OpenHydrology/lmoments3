@@ -15,17 +15,11 @@ class TestLmoments(unittest.TestCase):
 
     def test_aic(self):
         data = [1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0, 2.4, 3.5, 1.4, 6.5, 1.2, 6.8, 5.4, 3.4]
-        gamfit = lm.pelgam(lm.samlmu(data, 5))
+        gamfit = distr.gam.lmom_fit(data)
         test1 = stats.AIC(data, 'gam', gamfit)
         test2 = stats.AIC(data, "GAM")
         self.assertAlmostEqual(test1, test2)
         # TODO: assert something better
-
-    def test_glo_lmom(self):
-        testdata = [2.0, 3.0, 4.0, 2.4, 5.5, 1.2, 5.4, 2.2, 7.1, 1.3, 1.5]
-        paras = distr.glo.lmom_fit(testdata)
-        print(paras)
-
 
 
 class TestExp(DistributionTestCase):

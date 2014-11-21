@@ -40,9 +40,10 @@ def neg_log_lik(x, distr_name, distr_paras={}):
 
     # Fit x to estimate distribution function parameters, if not provided
     if not distr_paras:
-        lmoms = lm.samlmu(x)
-        pel_f = getattr(lm, 'pel' + distr_name)
-        distr_paras = pel_f(lmoms)
+        #lmoms = lm.samlmu(x)
+        #pel_f = getattr(lm, 'pel' + distr_name)
+        #distr_paras = pel_f(lmoms)
+        distr_paras = getattr(distr, distr_name).lmom_fit(x)
 
     distr_f = getattr(distr, distr_name)  # scipy rv_continous class
     nll = distr_f.nnlf(theta=list(distr_paras.values()), x=x)

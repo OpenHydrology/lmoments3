@@ -59,7 +59,6 @@ Licensing for Python Translation:
 import scipy as sp
 import numpy as np
 from ._lmrxxx import *
-from ._pelxxx import *
 from ._lmomxxx import *
 
 
