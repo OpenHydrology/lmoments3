@@ -30,7 +30,7 @@ import lmoments3 as lm
 class LmomDistrMixin(object):
     """
     Mixin class to add L-moment methods to :class:`scipy.stats.rv_continous` distribution functions. Distributions using
-    the mixin should override the methods :meth:`._lmom_fit`, :meth:`.lmom`, and :meth:`.lmom_ratios`.
+    the mixin should override the methods :meth:`._lmom_fit` and :meth:`.lmom_ratios`.
     """
 
     def lmom_fit(self, data=[], lmom_ratios=[]):
@@ -71,7 +71,10 @@ class LmomDistrMixin(object):
         :returns: List of L-moments
         :rtype: list
         """
-        raise NotImplementedError
+        ratios = self.lmom_ratios(*args, **kwds)
+        moments = ratios[0:2]
+        moments += [ratio * moments[1] for ratio in ratios[2:]]
+        return moments
 
     def lmom_ratios(self, *args, **kwds):
         """
@@ -135,6 +138,25 @@ class GenlogisticGen(LmomDistrMixin, scipy.stats.rv_continuous):
                             ('loc', para1),
                             ('scale', A)])
         return para
+
+    def lmom_ratios(self, *args, **kwds):
+        args, loc, scale = self._parse_args(*args, **kwds)
+        k = args[0]
+        SMALL = 1e-04
+        C1 = 1.64493406684823
+        C2 = 1.89406565899449
+        KK = k * k
+        if abs(k) > SMALL:
+            ALAM2 = k * math.pi / math.sin(k * math.pi)
+            ALAM1 = (1 - ALAM2) / k
+        else:
+            ALAM1 = -k * (C1 + KK * C2)
+            ALAM2 = 1 + KK * (C1 + KK * C2)
+        L1 = loc + scale * ALAM1
+        L2 = scale * ALAM2
+        TAU3 = -k
+        TAU4 = (1 + 5 * KK) / 6
+        return [L1, L2, TAU3, TAU4]
 
 
 glo = GenlogisticGen(name='glogistic', shapes='k')
