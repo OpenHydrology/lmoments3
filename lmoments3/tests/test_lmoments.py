@@ -36,6 +36,7 @@ class TestExp(DistributionTestCase):
 
 class TestGam(DistributionTestCase):
     dist = 'gam'
+    nmom = 4
     # The location parameter is not used for the gamma distribution, so len(paras) should actually return 2, for example
     # for calculating degrees of freedom etc.
     # TODO: find a nice way of dealing with this issue
@@ -69,7 +70,7 @@ class TestGlo(DistributionTestCase):
     correct_lmr = [3.2363636, 1.1418182, 0.2738854, 0.2291777]
     correct_cdf = [0.3052960, 0.8519915, 0.9624759]
     correct_pdf = [0.14033225, 0.07760825, 0.04294245, 0.02463028]
-    correct_lmom = [3.2363636, 1.1418182, 0.3127273, 0.2616792, 0.14398729]  # 5th value has not be verified
+    correct_lmom = [3.2363636, 1.1418182, 0.3127273, 0.2616792, 0.1439873]
     correct_nlogl = 21.6538832
 
 
@@ -138,6 +139,7 @@ class TestNor(DistributionTestCase):
 
 class TestPe3(DistributionTestCase):
     dist = 'pe3'
+    nmom = 4
     paras = {'loc': 3.236364, 'scale': 2.199489, 'skew': 1.646184}
     correct_fit = [3.236364, 2.199489, 1.646184]
     correct_qua = [1.447672, 2.663015, 4.705896]
@@ -171,5 +173,5 @@ class TestWei(DistributionTestCase):
     #correct_pdf = [0.07149587, 0.04550752, 0.02836919, 0.01738135]
     # New values taken from R, using `dweibull(x-0.6740393, shape=1.1750218, scale=2.7087887)`
     correct_pdf = [0.12592833, 0.08318826, 0.05339457, 0.03351231]
-    correct_lmom = [1.88828496, 1.14181818, 0.31272723, 0.16137985, 0.09159867]
+    correct_lmom = [3.2363636, 1.1418182, 0.31272723, 0.16137985, -0.09159867]
     correct_nlogl = 20.749053

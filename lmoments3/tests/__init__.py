@@ -7,6 +7,7 @@ from numpy.testing import assert_almost_equal
 
 class DistributionTestCase(unittest.TestCase):
     dist = None
+    nmom = 5
     paras = {}
     distr_f = None
     inputs_qua = [0.2, 0.5, 0.8]
@@ -38,14 +39,14 @@ class DistributionTestCase(unittest.TestCase):
     def test_lmom(self):
         if self.distr_f:
             d = self.distr_f
-            lmom = d.lmom(nmom=5, **self.paras)
+            lmom = d.lmom(nmom=self.nmom, **self.paras)
             self.assertAlmostEqual(lmom, self.correct_lmom, places=6)
 
     def test_lmr(self):
-        if self.dist:
-            f = getattr(lm, 'lmr' + self.dist)
-            lmr = f(self.correct_fit, 4)
-            self.assertAlmostEqual(lmr, self.correct_lmr)
+        if self.distr_f:
+            d = self.distr_f
+            lmom_ratios = d.lmom_ratios(nmom=4, **self.paras)
+            self.assertAlmostEqual(lmom_ratios, self.correct_lmr, places=6)
 
     def test_nlogl(self):
         if self.dist:
