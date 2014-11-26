@@ -1333,7 +1333,7 @@ pe3 = Pearson3Gen(name="pearson3", shapes='skew')
 
 class FrechetRGen(LmomDistrMixin, scipy.stats.distributions.frechet_r_gen):
     def _lmom_fit(self, lmom_ratios):
-        if lmom_ratios[1] <= 0 or lmom_ratios[2] >= 1 or lmom_ratios[2] <= -lm.lmrgum([0, 1], nmom=3)[2]:
+        if lmom_ratios[1] <= 0 or lmom_ratios[2] >= 1 or lmom_ratios[2] <= -gum.lmom_ratios(nmom=3)[2]:
             raise ValueError("L-Moments invalid")
 
         pg = gev.lmom_fit(lmom_ratios=[-lmom_ratios[0], lmom_ratios[1], -lmom_ratios[2]])
