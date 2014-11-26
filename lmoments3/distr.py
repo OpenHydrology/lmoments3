@@ -564,14 +564,13 @@ class KappaGen(LmomDistrMixin, scipy.stats.rv_continuous):
             raise ValueError("Invalid parameters")
 
         DLGAM = special.gammaln(1 + k)
+        ICASE = 1
         if h > 0:
             ICASE = 3
-        elif abs(h) < SMALL:
+        if abs(h) < SMALL:
             ICASE = 2
-        elif k == 0:
-            ICASE = 4  # was += 3. TODO: check what's happening
-        else:
-            ICASE = 1
+        if k == 0:
+            ICASE += 3
 
         Beta = []
         if ICASE == 1:
@@ -833,7 +832,6 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
         return para
 
     def _lmom_ratios(self, beta, gamma, delta, loc, scale, nmom):
-        fail = 0
         if (delta >= 1) \
                 or (beta + delta <= 0 and (beta != 0 or gamma != 0 or delta != 0)) \
                 or (scale == 0 and beta != 0) \
@@ -845,8 +843,7 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
 
         Y = scale / (1 + beta)
         Z = gamma / (1 - delta)
-        xmom = []
-        xmom.append(loc + Y + Z)
+        xmom = [loc + Y + Z]
         if nmom == 1:
             return xmom
 
@@ -979,27 +976,25 @@ class GammaGen(LmomDistrMixin, scipy.stats.distributions.gamma_gen):
         [D1, D2] = [0.18324466, 0.20166036]
         [E1, E2, E3] = [2.3807576, 1.5931792, 0.11618371]
         [F1, F2, F3] = [5.1533299, 7.1425260, 1.9745056]
-        [G1, G2, G3] = [2.1235833, 4.1670213, 3.1925299]
-        [H1, H2, H3] = [9.0551443, 26.649995, 26.193668]
 
-        Alpha = a
-        Beta = scale
-        if Alpha <= 0:
+        if a <= 0:
             raise ValueError("Invalid Parameters")
         if nmom > 4:
             raise ValueError("Parameter nmom too large")
+        if loc != 0:
+            raise ValueError("Location parameter not supported for Gamma distribution.")
 
         xmom = []
-        xmom.append(Alpha * Beta)
+        xmom.append(a * scale)
         if nmom == 1:
             return (xmom)
 
-        xmom.append(Beta * 1 / math.sqrt(math.pi) * math.exp(special.gammaln(Alpha + 0.5) - special.gammaln(Alpha)))
+        xmom.append(scale * 1 / math.sqrt(math.pi) * math.exp(special.gammaln(a + 0.5) - special.gammaln(a)))
         if nmom == 2:
             return (xmom)
 
-        if Alpha < 1:
-            Z = Alpha
+        if a < 1:
+            Z = a
             xmom.append((((E3 * Z + E2) * Z + E1) * Z + 1) / (((F3 * Z + F2) * Z + F1) * Z + 1))
             if nmom == 3:
                 return (xmom)
@@ -1007,7 +1002,7 @@ class GammaGen(LmomDistrMixin, scipy.stats.distributions.gamma_gen):
             if nmom == 4:
                 return (xmom)
         else:
-            Z = 1 / Alpha
+            Z = 1 / a
             xmom.append(math.sqrt(Z) * (((A3 * Z + A2) * Z + A1) * Z + A0) / ((B2 * Z + B1) * Z + 1))
             if nmom == 3:
                 return (xmom)
