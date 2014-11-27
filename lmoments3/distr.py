@@ -21,6 +21,7 @@ from collections import OrderedDict
 import numpy as np
 import scipy.stats
 import scipy.stats.distributions
+from scipy.stats.distributions import genpareto_gen
 from scipy import special
 import math
 import lmoments3 as lm
@@ -869,7 +870,7 @@ scipy distribution with L-moment methods.
 """
 
 
-class GenParetoGen(LmomDistrMixin, scipy.stats.distributions.genpareto_gen):
+class GenParetoGen(LmomDistrMixin, genpareto_gen):
     def _lmom_fit(self, lmom_ratios):
         T3 = lmom_ratios[2]
         if lmom_ratios[1] <= 0 or abs(T3) >= 1:
