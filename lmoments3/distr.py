@@ -20,8 +20,7 @@
 from collections import OrderedDict
 import numpy as np
 import scipy.stats
-import scipy.stats.distributions
-from scipy.stats.distributions import genpareto_gen
+import scipy.stats._continuous_distns
 from scipy import special
 import math
 import lmoments3 as lm
@@ -870,7 +869,7 @@ scipy distribution with L-moment methods.
 """
 
 
-class GenParetoGen(LmomDistrMixin, genpareto_gen):
+class GenParetoGen(LmomDistrMixin, scipy.stats._continuous_distns.genpareto_gen):
     def _lmom_fit(self, lmom_ratios):
         T3 = lmom_ratios[2]
         if lmom_ratios[1] <= 0 or abs(T3) >= 1:
@@ -915,7 +914,7 @@ class GenParetoGen(LmomDistrMixin, genpareto_gen):
 gpa = GenParetoGen(a=0.0, name='genpareto', shapes='c')
 
 
-class ExponGen(LmomDistrMixin, scipy.stats.distributions.expon_gen):
+class ExponGen(LmomDistrMixin, scipy.stats._continuous_distns.expon_gen):
     def _lmom_fit(self, lmom_ratios):
         if lmom_ratios[1] <= 0:
             raise ValueError("L-Moments invalid")
@@ -942,7 +941,7 @@ class ExponGen(LmomDistrMixin, scipy.stats.distributions.expon_gen):
 exp = ExponGen(a=0.0, name='expon')
 
 
-class GammaGen(LmomDistrMixin, scipy.stats.distributions.gamma_gen):
+class GammaGen(LmomDistrMixin, scipy.stats._continuous_distns.gamma_gen):
     def _lmom_fit(self, lmom_ratios):
         A1 = -0.3080
         A2 = -0.05812
@@ -1016,7 +1015,7 @@ class GammaGen(LmomDistrMixin, scipy.stats.distributions.gamma_gen):
 gam = GammaGen(a=0.0, name='gamma', shapes='a')
 
 
-class GenextremeGen(LmomDistrMixin, scipy.stats.distributions.genextreme_gen):
+class GenextremeGen(LmomDistrMixin, scipy.stats._continuous_distns.genextreme_gen):
     def _lmom_fit(self, lmom_ratios):
         SMALL = 1e-5
         eps = 1e-6
@@ -1156,7 +1155,7 @@ class GenextremeGen(LmomDistrMixin, scipy.stats.distributions.genextreme_gen):
 gev = GenextremeGen(name='genextreme', shapes='c')
 
 
-class GumbelGen(LmomDistrMixin, scipy.stats.distributions.gumbel_r_gen):
+class GumbelGen(LmomDistrMixin, scipy.stats._continuous_distns.gumbel_r_gen):
     def _lmom_fit(self, lmom_ratios):
         EU = 0.577215664901532861
         if lmom_ratios[1] <= 0:
@@ -1190,7 +1189,7 @@ class GumbelGen(LmomDistrMixin, scipy.stats.distributions.gumbel_r_gen):
 gum = GumbelGen(name='gumbel_r')
 
 
-class NormGen(LmomDistrMixin, scipy.stats.distributions.norm_gen):
+class NormGen(LmomDistrMixin, scipy.stats._continuous_distns.norm_gen):
     def _lmom_fit(self, lmom_ratios):
         if lmom_ratios[1] <= 0:
             raise ValueError("L-Moments invalid")
@@ -1220,7 +1219,7 @@ class NormGen(LmomDistrMixin, scipy.stats.distributions.norm_gen):
 nor = NormGen(name='norm')
 
 
-class Pearson3Gen(LmomDistrMixin, scipy.stats.distributions.pearson3_gen):
+class Pearson3Gen(LmomDistrMixin, scipy.stats._continuous_distns.pearson3_gen):
     def _lmom_fit(self, lmom_ratios):
         Small = 1e-6
         # Constants used in Minimax Approx:
@@ -1332,7 +1331,7 @@ class Pearson3Gen(LmomDistrMixin, scipy.stats.distributions.pearson3_gen):
 pe3 = Pearson3Gen(name="pearson3", shapes='skew')
 
 
-class FrechetRGen(LmomDistrMixin, scipy.stats.distributions.frechet_r_gen):
+class FrechetRGen(LmomDistrMixin, scipy.stats._continuous_distns.frechet_r_gen):
     def _lmom_fit(self, lmom_ratios):
         if lmom_ratios[1] <= 0 or lmom_ratios[2] >= 1 or lmom_ratios[2] <= -gum.lmom_ratios(nmom=3)[2]:
             raise ValueError("L-Moments invalid")
