@@ -5,11 +5,12 @@ This library was designed to use L-moments to calculate optimal parameters for a
 extends a number of :mod:`scipy` distributions and provides some additional distributions frequently used in Extreme
 Value Analyses.
 
-========================= ================ ============= ========================================
+========================= ================ ============= ===============================================================
 Name                      `lmoments3` name `scipy` name  Parameters
-========================= ================ ============= ========================================
+========================= ================ ============= ===============================================================
 Exponential               `exp`            `expon`       `loc`, `scale`
-Gamma                     `gam`            `gamma`       `a`, `loc`, `scale`
+Gamma                     `gam`            `gamma`       `a`, `loc`, `scale` (The location parameter is not calculated
+                                                         using L-moments and assumed to be zero.)
 Generalised Extreme Value `gev`            `genextreme`  `c`, `loc`, `scale`
 Generalised Logistic      `glo`            n/a           `k`, `loc`, `scale`
 Generalised Normal        `gno`            n/a           `k`, `loc`, `scale`
@@ -20,7 +21,7 @@ Normal                    `nor`            `norm`        `loc`, `scale`
 Pearson III               `pe3`            `pearson3`    `skew`, `loc`, `scale`
 Wakeby                    `wak`            n/a           `beta`, `gamma`, `delta`, `loc`, `scale`
 Weibull                   `wei`            `weibull_min` `c`, `loc`, `scale`
-========================= ================ ============= ========================================
+========================= ================ ============= ===============================================================
 
 All distributions in the table above are included in the :mod:`lmoments3.distr` module.
 
@@ -64,128 +65,68 @@ distribution function parameters. The distribution parameters can be used, for e
 2.7804212925067344
 
 For full details of distribution function methods, see the
-`scipy.stats documentation <http://docs.scipy.org/doc/scipy/reference/stats.html>`_.
+`scipy.stats documentation <http://docs.scipy.org/doc/scipy/reference/stats.html>`_. Some useful methods include:
 
-Description of functions
-------------------------
+ - `pdf`: Probability density function
+ - `cdf`: Cumulative distribution function
+ - `ppf`: Inverse cumulative distribution function (also known as quantile function or percentage point function)
+ - `rvs`: Random numbers generator
 
-:meth:`pel(x, nmom)`
+Computing L-moments from distribution parameters
+------------------------------------------------
 
-Parameter Estimates.  This takes the L-Moments calculated by :meth:`samlmu()`
-and predicts the parameter estimates for that function.
+The :mod:`lmoments3` package provides two additional methods to compute the L-moments (λ1..n) or L-moment ratios
+(λ1, λ2, τ3..n) for a distribution with given parameters.
 
-Example: Find Wakeby distribution that best fits dataset `data`::
+Example:
 
-    import lmoments3 as lm
-    para = lm.pelwak(lm.samlmu(data,5))
+>>> distr.gam.lmom(nmom=3, **paras)
+[3.2363636363636363, 1.1418181181569327, 0.24963415541016151]
+>>> distr.gam.lmom_ratios(nmom=4, **paras)
+[3.2363636363636363, 1.1418181181569327, 0.21862865148182167, 0.13877337951549581]
 
+Or using the frozen distribution:
 
-:meth:`qua(f, para)`
+>>> moments = fitted_gam.lmom(nmom=3)
+>>> ratios = fitted_gam.lmom_ratios(nmom=4)
 
-Quantile Estimates.  This takes the parameter estimates for a
-distribution, and a given quantile value `f` to calculate the quantile for the
-given function.
+Other statistical methods
+-------------------------
 
-Example: Find the Upper Quantile (75%) of the Kappa distribution that
-best fits dataset `data`::
+The :mod:`lmoments3.stats` module provides some additional statistical parametes to evaluate fitting of data to
+distribution function.
 
-    import lmoments3 as lm
-    para = lm.pelkap(lm.samlmu(data, 5))
-    UQ = lm.quakap(0.75, para)
+:func:`neg_log_lik(data, distr_name, distr_paras={})`
 
+Calculates the Negative Log Likelihood for use in AIC/AICc/BIC calculations. Provide data, and distribution (three
+letters) to calculate the negeative log likelihood. If no distribution parameters are provided, the distribution is
+fitted using the L-moments technique.
 
-:meth:`lmr(para, nmom)`
+Example: Calculate the Negative Log Likelihood of a Gamma distribution fitted to `data`:
 
-L-Moment Ratios.  This takes the parameter estimates for a distribution
-and calculates nmom L-Moment ratios.
+>>> from lmoments3 import stats
+>>> stats.neg_log_lik(data, 'gam')
+21.283995091031553
 
-Example: Find 4 lmoment ratios for the Gumbel distribution that
-best fits dataset `data`::
+Example:  Calculate the Negative Log Likelihood of a Gamma distribution with parameters 2.5 and 1.0 when fitted to
+`data`:
 
-    import lmoments3 as lm
-    para = lm.pelgum(lm.samlmu(data, 5))
-    LMR = lm.lmrgum(para, 4)
+>>> from lmoments3 import stats
+>>> from collections import OrderedDict
+>>> stats.neg_log_lik(data, 'gam', OrderedDict([('a', 2.5), ('loc', 0), ('scale', 1)]))
+22.166452544264637
 
+:func:`AIC(data, distr_name, distr_paras={})`
 
-:meth:`cdf(x, para)`
+Calculate the Akaike Information Criterion (AIC) using the chosen dataset and distribution.
 
-Cumulative Distribution Function.  This takes the parameter estimates
-for a distribution and calculates the quantile for a given value `x`.
+Example: Calculate the Akaike Information Criterion for the weibull distribution using the input dataset `data`:
 
-Example: Find the quantile of the datapoint 6.4  for the Weibull
-Distribution that best fits the dataset `data`::
+>>> from lmoments3 import stats
+>>> akaike = stats.AIC(data, 'wei')
 
-    import lmoments3 as lm
-    para = lm.pelwei(lm.samlmu(data, 5))
-    quantile = lm.cdfwei(6.4, para)
-
-
-:meth:`pdf(x, para)`
-
-Probability Distribution Function.  This takes the parameter estimates
-for a distribution and calculates the p-value for a given value `x`.
-
-Example: Find the p-value of the datapoint 6.4 for the Weibull
-Distribution that best fits the dataset `data`::
-
-    import lmoments3 as lm
-    para = lm.pelwei(lm.samlmu(data, 5))
-    quantile = lm.pdfwei(6.4, para)
-
-:meth:`lmom(para)`
-
-L-Moment Estimation from Parameters.  This function takes the input
-parameters for a given distribution, and attempt to calculate the
-L-Moments that would correspond to this distribution.
-
-Example: Estimate the L-Moments of the Weibull Distribution that has
-parameters (2.5, 1.5, 0.5)::
-
-    import lmoments3 as lm
-    Lmoments = lm.lmomwei([2.5, 1.5, 0.5])
-
-:meth:`rand(n, para)`
-
-Random Number Generator for a given function.  This takes a curve fit
-and returns a list of random numbers generated from that distribution
-
-Example: Generate 10 numbers from the weibull distribution that makes
-up the dataset `data`::
-
-    import lmoments3 as lm
-    weibullfit = lm.pelwei(lm.samlmu(data))
-    randnums = lm.randwei(10, weibullfit)
-
-:meth:`NlogL(data, dist, peldist)`
-
-Calculates the Negative Log Likelihood for use in AIC/AICc/BIC calculations.
-Provide data, and distribution to calculate NlogL.  Can also provide curve
-fitting parameters, but if they aren't provided, then the function will
-generate them via pelxxx(samlmu(data)).  To specify the distribution, use the
-three letters typically assigned.
-
-Example: Calculate the Negative Log Likelihood of a Gamma distribution
-fitted to `data`::
-
-    import lmoments3 as lm
-    NLL = lm.NlogL(data, 'GAM')
-
-Example:  Calculate the Negative Log Likelihood of a Gamma distribution
-with parameters `[2.5, 1.0]` when fitted to `data`::
-
-    import lmoments3 as lm
-    NLL = lm.NlogL(data, 'GAM', [2.5, 1.0])
-
-:meth:`AIC(data, dist, *distfit)`
-
-Calculate the Akaike Information Criterion (AIC) using the chosen dataset
-and distribution
-
-Example:  Calculate the Akaike Information Criterion for the weibull
-distribution using the input dataset `data`::
-
-    import lmoments3 as lm
-    Akaike = lm.AIC(data, 'WEI')
+Functions :func:`AICc` and :func:`BIC` have a similar structure and calculate the corrected Akaike Information Criterion
+and the Bayesian Information Criterion respectively.
 
 
 Contents:

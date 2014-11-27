@@ -22,11 +22,11 @@ from . import distr
 import lmoments3 as lm
 
 
-def neg_log_lik(x, distr_name, distr_paras={}):
+def neg_log_lik(data, distr_name, distr_paras={}):
     """
     Calculate the negative log likelihood of a dataset with a distribution
-    :param x: fitted dataset
-    :type x: array-like
+    :param data: fitted dataset
+    :tydatae x: array-like
     :param distr_name: 3-letter code of distribution function, e.g. `exp`
     :type distr_name: str
     :param distr_paras: the distribution function's parameters (optional). If not provided, the data will be fitted
@@ -35,18 +35,15 @@ def neg_log_lik(x, distr_name, distr_paras={}):
     :return: negative log likelihood
     :type: float
     """
-    x = sp.asarray(x)
+    data = sp.asarray(data)
     distr_name = distr_name.lower()  # Ignore case
 
-    # Fit x to estimate distribution function parameters, if not provided
+    # Fit data to estimate distribution function parameters, if not provided
     if not distr_paras:
-        #lmoms = lm.samlmu(x)
-        #pel_f = getattr(lm, 'pel' + distr_name)
-        #distr_paras = pel_f(lmoms)
-        distr_paras = getattr(distr, distr_name).lmom_fit(x)
+        distr_paras = getattr(distr, distr_name).lmom_fit(data)
 
     distr_f = getattr(distr, distr_name)  # scipy rv_continous class
-    nll = distr_f.nnlf(theta=list(distr_paras.values()), x=x)
+    nll = distr_f.nnlf(theta=list(distr_paras.values()), x=data)
     return nll
 
 
@@ -55,29 +52,29 @@ def distr_n_params(distr_name):
     return distr_f.numargs + 2  # Include location and scale in addition to shape parameters
 
 
-def AIC(x, distr_name, distr_paras={}):
+def AIC(data, distr_name, distr_paras={}):
     distr_name = distr_name.lower()  # Ignore case
 
-    NLL = neg_log_lik(x, distr_name, distr_paras)
+    NLL = neg_log_lik(data, distr_name, distr_paras)
     k = distr_n_params(distr_name)
     AIC = 2 * k + 2 * NLL
     return AIC
 
 
-def AICc(x, distr_name, distr_paras={}):
+def AICc(data, distr_name, distr_paras={}):
     distr_name = distr_name.lower()  # Ignore case
 
-    AICbase = AIC(x, distr_name, distr_paras)
+    AICbase = AIC(data, distr_name, distr_paras)
     k = distr_n_params(distr_name)
-    diff = 2 * k * (k + 1) / (len(x) - k - 1)
+    diff = 2 * k * (k + 1) / (len(data) - k - 1)
     AICc = AICbase + diff
     return AICc
 
 
-def BIC(x, distr_name, distr_paras={}):
+def BIC(data, distr_name, distr_paras={}):
     distr_name = distr_name.lower()  # Ignore case
 
-    NLL = neg_log_lik(x, distr_name, distr_paras)
+    NLL = neg_log_lik(data, distr_name, distr_paras)
     k = distr_n_params(distr_name)
-    BIC = k * sp.log(len(x)) + 2 * NLL
+    BIC = k * sp.log(len(data)) + 2 * NLL
     return BIC
