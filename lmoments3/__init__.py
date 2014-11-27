@@ -60,22 +60,22 @@ import scipy as sp
 import numpy as np
 
 
-def samlmu(x, nmom=5):
+def lmom_ratios(data, nmom=5):
     """
-    Estimate `nmom` number of L-moments.
+    Estimate `nmom` number of L-moments from a sample `data`.
 
-    :param x: Sequence of (sample) data
-    :type x: list or array-like sequence
+    :param data: Sequence of (sample) data
+    :type data: list or array-like sequence
     :param nmom: number of L-moments to estimate
     :type nmom: int
-    :return: L-moments like this: l1, l2, t3, t4, t5, .. . As in: items 3 and higher are L-moment ratios.
+    :return: L-moment ratios like this: l1, l2, t3, t4, t5, .. . As in: items 3 and higher are L-moment ratios.
     :rtype: list
     """
 
     if nmom <= 5:
-        return _samlmusmall(x, nmom)
+        return _samlmusmall(data, nmom)
     else:
-        return _samlmularge(x, nmom)
+        return _samlmularge(data, nmom)
 
 
 def _samlmularge(x, nmom=5):

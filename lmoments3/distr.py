@@ -47,7 +47,7 @@ class LmomDistrMixin(object):
         if len(data) > 0:
             if len(data) <= n_min:
                 raise ValueError("At least {} data points must be provided.".format(n_min))
-            lmom_ratios = lm.samlmu(data, nmom=n_min)
+            lmom_ratios = lm.lmom_ratios(data, nmom=n_min)
         elif not lmom_ratios:
             raise Exception("Either `data` or `lmom_ratios` must be provided.")
         elif len(lmom_ratios) < n_min:

@@ -17,7 +17,7 @@ class DistributionTestCase(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.testdata = [2.0, 3.0, 4.0, 2.4, 5.5, 1.2, 5.4, 2.2, 7.1, 1.3, 1.5]
-        cls.lmu = lm.samlmu(cls.testdata)
+        cls.lmu = lm.lmom_ratios(cls.testdata)
         if cls.dist:
             cls.distr_f = getattr(distr, cls.dist)
         super(DistributionTestCase, cls).setUpClass()

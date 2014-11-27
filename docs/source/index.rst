@@ -30,14 +30,14 @@ L-moment estimation from sample data
 
 The primary purpose of this library is to estimate L-moments from a sample dataset.
 
-The method :meth:`lmoments3.samlmu(x, nmom)` takes an input list or `numpy` array `x` and the number of L-moments to
-estimate from the dataset.
+The function :func:`lmoments3.lmom_ratios(data, nmom)` takes an input list or `numpy` array `data` and the number of
+L-moments to estimate from the dataset.
 
 Example:
 
 >>> import lmoments3 as lm
 >>> data = [2.0, 3.0, 4.0, 2.4, 5.5, 1.2, 5.4, 2.2, 7.1, 1.3, 1.5]
->>> lm.samlmu(data, nmom=5)
+>>> lm.lmom_ratios(data, nmom=5)
 [3.2363636363636363, 1.1418181818181818, 0.27388535031847133, 0.023354564755838598, -0.042462845010615709]
 
 This returns the first five sample L-moments, in the structured as l1, l2, t3, t4, t5. Where t3..5 = l3..5 / l2.

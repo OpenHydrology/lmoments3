@@ -22,14 +22,14 @@ class TestSamlmuSpeed(unittest.TestCase):
     def test_n50_nmom3(self):
         start_i = 0
         for i in range(10000):
-            l1, l2, t3 = lm.samlmu(self.record[start_i:start_i + self.n], nmom=3)
+            l1, l2, t3 = lm.lmom_ratios(self.record[start_i:start_i + self.n], nmom=3)
             t2 = l2 / l1
             start_i += self.n
 
     def test_n50_nmom4(self):
         start_i = 0
         for i in range(10000):
-            l1, l2, t3, t4 = lm.samlmu(self.record[start_i:start_i + self.n], nmom=4)
+            l1, l2, t3, t4 = lm.lmom_ratios(self.record[start_i:start_i + self.n], nmom=4)
             t2 = l2 / l1
             start_i += self.n
 
