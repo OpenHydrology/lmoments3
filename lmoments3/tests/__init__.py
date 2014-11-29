@@ -42,10 +42,22 @@ class DistributionTestCase(unittest.TestCase):
             lmom = d.lmom(nmom=self.nmom, **self.paras)
             self.assertAlmostEqual(lmom, self.correct_lmom, places=6)
 
+    def test_lmom_frozen(self):
+        if self.distr_f:
+            d = self.distr_f(**self.paras)
+            lmom = d.lmom(nmom=self.nmom)
+            self.assertAlmostEqual(lmom, self.correct_lmom, places=6)
+
     def test_lmr(self):
         if self.distr_f:
             d = self.distr_f
             lmom_ratios = d.lmom_ratios(nmom=4, **self.paras)
+            self.assertAlmostEqual(lmom_ratios, self.correct_lmr, places=6)
+
+    def test_lmr_frozen(self):
+        if self.distr_f:
+            d = self.distr_f(**self.paras)
+            lmom_ratios = d.lmom_ratios(nmom=4)
             self.assertAlmostEqual(lmom_ratios, self.correct_lmr, places=6)
 
     def test_nlogl(self):

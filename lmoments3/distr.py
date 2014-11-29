@@ -58,7 +58,7 @@ class LmomDistrMixin(object):
     def _lmom_fit(self, lmom_ratios):
         raise NotImplementedError
 
-    def lmom(self, *args, **kwds):
+    def lmom(self, *args, nmom=5, **kwds):
         """
         Compute the distribution's L-moments, e.g. l1, l2, l3, l4, ..
 
@@ -70,7 +70,7 @@ class LmomDistrMixin(object):
         :returns: List of L-moments
         :rtype: list
         """
-        ratios = self.lmom_ratios(*args, **kwds)
+        ratios = self.lmom_ratios(*args, nmom=nmom, **kwds)
         moments = ratios[0:2]
         moments += [ratio * moments[1] for ratio in ratios[2:]]
         return moments
@@ -100,6 +100,20 @@ class LmomDistrMixin(object):
     def _lmom_ratios(self, *shapes, loc, scale, nmom):
         raise NotImplementedError
 
+    def freeze(self, *args, **kwds):
+        # Override `freeze` because we're extending the frozen version of the distribution.
+        return LmomFrozenDistr(self, *args, **kwds)
+
+
+class LmomFrozenDistr(scipy.stats.distributions.rv_frozen):
+    def __init__(self, dist, *args, **kwds):
+        super().__init__(dist, *args, **kwds)
+
+    def lmom(self, nmom=5):
+        return self.dist.lmom(*self.args, nmom=nmom, **self.kwds)
+
+    def lmom_ratios(self, nmom=5):
+        return self.dist.lmom_ratios(*self.args, nmom=nmom, **self.kwds)
 
 """
 The following distributions are **not** available in :mod:`scipy.stats`.
