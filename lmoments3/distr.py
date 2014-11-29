@@ -97,8 +97,24 @@ class LmomDistrMixin(object):
 
         return self._lmom_ratios(*shapes, loc=loc, scale=scale, nmom=nmom)
 
-    def _lmom_ratios(self, *shapes, loc, scale, nmom):
+    def _lmom_ratios(self, *shapes, locs, scale, nmom):
         raise NotImplementedError
+
+    def nnlf(self, data, *args, **kwds):
+        # Override `nnlf` to provide a more consistent interface with shape and loc and scale parameters
+
+        data = np.asarray(data)
+        if args or kwds:
+            shapes, loc, scale = self._parse_args(*args, **kwds)
+            # This is how scipy's nnlf requires parameters
+            theta = list(shapes) + [loc, scale]
+        else:
+            # If no distribution parameters are provided, automatically fit the distribution to data
+            paras = self.lmom_fit(data)
+            theta = list(paras.values())
+
+        # Now call the super class's nnlf
+        return scipy.stats.rv_continuous.nnlf(self, x=data, theta=theta)
 
     def freeze(self, *args, **kwds):
         # Override `freeze` because we're extending the frozen version of the distribution.

@@ -90,31 +90,33 @@ Or using the frozen distribution:
 >>> moments = fitted_gam.lmom(nmom=3)
 >>> ratios = fitted_gam.lmom_ratios(nmom=4)
 
-Other statistical methods
--------------------------
+Modified implementation of negative log likelihood function
+-----------------------------------------------------------
 
-The :mod:`lmoments3.stats` module provides some additional statistical parametes to evaluate fitting of data to
-distribution function.
+:meth:`nnlf(data, *args, **kwds)`
 
-:func:`neg_log_lik(data, distr_name, distr_paras={})`
-
-Calculates the Negative Log Likelihood for use in AIC/AICc/BIC calculations. Provide data, and distribution (three
-letters) to calculate the negeative log likelihood. If no distribution parameters are provided, the distribution is
-fitted using the L-moments technique.
+Calculates the Negative Log Likelihood for use in AIC/AICc/BIC calculations. Provide data, to calculate the negeative
+log likelihood. If no distribution parameters are provided, the distribution is fitted using the L-moments technique.
 
 Example: Calculate the Negative Log Likelihood of a Gamma distribution fitted to `data`:
 
->>> from lmoments3 import stats
->>> stats.neg_log_lik(data, 'gam')
+>>> from lmoments3 import distr
+>>> distr.gam.nnlf(data)
 21.283995091031553
 
 Example:  Calculate the Negative Log Likelihood of a Gamma distribution with parameters 2.5 and 1.0 when fitted to
 `data`:
 
->>> from lmoments3 import stats
+>>> from lmoments3 import distr
 >>> from collections import OrderedDict
->>> stats.neg_log_lik(data, 'gam', OrderedDict([('a', 2.5), ('loc', 0), ('scale', 1)]))
+>>> distr.gam.nnlf(data, a=2.5, scale=1)
 22.166452544264637
+
+Other statistical methods
+-------------------------
+
+The :mod:`lmoments3.stats` module provides some additional statistical parametes to evaluate fitting of data to
+distribution function.
 
 :func:`AIC(data, distr_name, distr_paras={})`
 

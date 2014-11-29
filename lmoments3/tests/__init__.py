@@ -26,8 +26,8 @@ class DistributionTestCase(unittest.TestCase):
         return assert_almost_equal(first, second, decimal=places)
 
     def test_n_paras(self):
-        if self.dist:
-            n = stats.distr_n_params(self.dist)
+        if self.distr_f:
+            n = self.distr_f.numargs + 2
             self.assertEqual(len(self.paras), n)
 
     def test_fit(self):
@@ -61,8 +61,8 @@ class DistributionTestCase(unittest.TestCase):
             self.assertAlmostEqual(lmom_ratios, self.correct_lmr, places=6)
 
     def test_nlogl(self):
-        if self.dist:
-            nlogl = stats.neg_log_lik(self.testdata, self.dist)
+        if self.distr_f:
+            nlogl = self.distr_f.nnlf(self.testdata)
             self.assertAlmostEqual(self.correct_nlogl, nlogl)
 
     def test_qua(self):
