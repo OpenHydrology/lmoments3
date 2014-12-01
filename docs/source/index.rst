@@ -95,14 +95,15 @@ Modified implementation of negative log likelihood function
 
 :meth:`nnlf(data, *args, **kwds)`
 
-Calculates the Negative Log Likelihood for use in AIC/AICc/BIC calculations. Provide data, to calculate the negeative
-log likelihood. If no distribution parameters are provided, the distribution is fitted using the L-moments technique.
+Calculates the Negative Log Likelihood. Provide data to calculate the negeative log likelihood. If no distribution
+parameters are provided, the `scipy` defaults of `loc=0` and `scale=1` are used.
 
 Example: Calculate the Negative Log Likelihood of a Gamma distribution fitted to `data`:
 
 >>> from lmoments3 import distr
->>> distr.gam.nnlf(data)
-21.283995091031553
+>>> paras = distr.gam.lmom_fit(data)
+>>> distr.gam.nnlf(data, **paras)
+21.283995091031549
 
 Example:  Calculate the Negative Log Likelihood of a Gamma distribution with parameters 2.5 and 1.0 when fitted to
 `data`:
@@ -118,14 +119,16 @@ Other statistical methods
 The :mod:`lmoments3.stats` module provides some additional statistical parametes to evaluate fitting of data to
 distribution function.
 
-:func:`AIC(data, distr_name, distr_paras={})`
+:func:`AIC(data, distr_name, distr_paras)`
 
 Calculate the Akaike Information Criterion (AIC) using the chosen dataset and distribution.
 
 Example: Calculate the Akaike Information Criterion for the weibull distribution using the input dataset `data`:
 
->>> from lmoments3 import stats
->>> akaike = stats.AIC(data, 'wei')
+>>> from lmoments3 import stats, distr
+>>> paras = {'loc': 0.67, 'scale': 2.71, 'c': 1.18}
+>>> stats.AIC(data, 'wei', paras)
+47.500528639652515
 
 Functions :func:`AICc` and :func:`BIC` have a similar structure and calculate the corrected Akaike Information Criterion
 and the Bayesian Information Criterion respectively.

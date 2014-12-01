@@ -32,6 +32,15 @@ class LmomDistrMixin(object):
     the mixin should override the methods :meth:`._lmom_fit` and :meth:`.lmom_ratios`.
     """
 
+    def _lmom_fit(self, lmom_ratios):
+        raise NotImplementedError
+
+    def _lmom_ratios(self, *shapes, locs, scale, nmom):
+        """
+        When overriding, *shapes can be replaced by the actual distribution's shape parameter(s), if any.
+        """
+        raise NotImplementedError
+
     def lmom_fit(self, data=[], lmom_ratios=[]):
         """
         Fit the distribution function to the given data or given L-moments.
@@ -55,15 +64,14 @@ class LmomDistrMixin(object):
 
         return self._lmom_fit(lmom_ratios)
 
-    def _lmom_fit(self, lmom_ratios):
-        raise NotImplementedError
-
     def lmom(self, *args, nmom=5, **kwds):
         """
         Compute the distribution's L-moments, e.g. l1, l2, l3, l4, ..
 
         :param args: Distribution parameters in order of shape(s), loc, scale
         :type args: float
+        :param nmom: Number of moments to calculate
+        :type nmom: int
         :param kwds: Distribution parameters as named arguments. See :attr:`rv_continous.shapes` for names of shape
                      parameters
         :type kwds: float
@@ -81,6 +89,8 @@ class LmomDistrMixin(object):
 
         :param args: Distribution parameters in order of shape(s), loc, scale
         :type args: float
+        :param nmom: Number of moments to calculate
+        :type nmom: int
         :param kwds: Distribution parameters as named arguments. See :attr:`rv_continous.shapes` for names of shape
                      parameters
         :type kwds: float
@@ -97,21 +107,13 @@ class LmomDistrMixin(object):
 
         return self._lmom_ratios(*shapes, loc=loc, scale=scale, nmom=nmom)
 
-    def _lmom_ratios(self, *shapes, locs, scale, nmom):
-        raise NotImplementedError
-
     def nnlf(self, data, *args, **kwds):
         # Override `nnlf` to provide a more consistent interface with shape and loc and scale parameters
 
         data = np.asarray(data)
-        if args or kwds:
-            shapes, loc, scale = self._parse_args(*args, **kwds)
-            # This is how scipy's nnlf requires parameters
-            theta = list(shapes) + [loc, scale]
-        else:
-            # If no distribution parameters are provided, automatically fit the distribution to data
-            paras = self.lmom_fit(data)
-            theta = list(paras.values())
+        shapes, loc, scale = self._parse_args(*args, **kwds)
+        # This is how scipy's nnlf requires parameters
+        theta = list(shapes) + [loc, scale]
 
         # Now call the super class's nnlf
         return scipy.stats.rv_continuous.nnlf(self, x=data, theta=theta)
@@ -122,6 +124,11 @@ class LmomDistrMixin(object):
 
 
 class LmomFrozenDistr(scipy.stats.distributions.rv_frozen):
+    """
+    Frozen version of the distribution returned by :class:`LmomDistrMixin`. Simply provides additional methods supported
+    by the mixin.
+    """
+
     def __init__(self, dist, *args, **kwds):
         super().__init__(dist, *args, **kwds)
 

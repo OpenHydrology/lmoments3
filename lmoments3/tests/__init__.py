@@ -62,7 +62,8 @@ class DistributionTestCase(unittest.TestCase):
 
     def test_nlogl(self):
         if self.distr_f:
-            nlogl = self.distr_f.nnlf(self.testdata)
+            paras = self.distr_f.lmom_fit(self.testdata)
+            nlogl = self.distr_f.nnlf(self.testdata, **paras)
             self.assertAlmostEqual(self.correct_nlogl, nlogl)
 
     def test_qua(self):
