@@ -632,7 +632,6 @@ class KappaGen(LmomDistrMixin, scipy.stats.rv_continuous):
             for IR in range(1, nmom + 1):
                 Beta.append(EU + math.log(-h) + special.psi(-IR / h))
 
-        # TODO: case never reached
         elif ICASE == 5:
             for IR in range(1, nmom + 1):
                 Beta.append(EU + math.log(IR))
