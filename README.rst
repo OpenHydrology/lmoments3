@@ -17,7 +17,7 @@ Origin
 ------
 
 This package contains a Python 3.x implementation of the lmoments.f library created by J. R. M. Hosking. (`copy of 
-original code <https://github.com/pierregm/scikits.hydroclimpy/blob/master/scikits/hydroclimpy/stats/lmoments.f>`_)
+original code <http://lib.stat.cmu.edu/general/lmoments>`_)
 
 IBM software disclaimer
 ~~~~~~~~~~~~~~~~~~~~~~~

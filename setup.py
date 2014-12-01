@@ -9,7 +9,7 @@ with open(path.join(here, 'README.rst'), encoding='utf-8') as f:
 
 setup(
     name='lmoments3',
-    version='0.3.1',
+    version='1.0.0',
     packages=['lmoments3'],
     url='https://github.com/OpenHydrology/lmoments3',
     license='GPLv3',
