@@ -1,3 +1,7 @@
+version 1.0.1 (2014-12-02)
+--------------------------
+- Fix `lmom_fit` for `gev` distribution. Did not return `OrderedDict` in some cases.
+
 version 1.0.0 (2014-12-01)
 --------------------------
 - Major rewrite with all distributions now being standard scipy `rv_continous` classes
