@@ -138,6 +138,7 @@ class LmomFrozenDistr(scipy.stats.distributions.rv_frozen):
     def lmom_ratios(self, nmom=5):
         return self.dist.lmom_ratios(*self.args, nmom=nmom, **self.kwds)
 
+
 """
 The following distributions are **not** available in :mod:`scipy.stats`.
 """
@@ -586,8 +587,8 @@ class KappaGen(LmomDistrMixin, scipy.stats.rv_continuous):
                 if FACTOR == 1:
                     pass
                 else:
-                    DEL1 = DEL1 * FACTOR
-                    DEL2 = DEL2 * FACTOR
+                    DEL1 *= FACTOR
+                    DEL2 *= FACTOR
                     G = XG - DEL1
                     H = XH - DEL2
                     Z = G + H * 0.725
@@ -1083,28 +1084,30 @@ class GenextremeGen(LmomDistrMixin, scipy.stats._continuous_distns.genextreme_ge
             if T3 >= -0.8:
                 para3 = G
                 GAM = math.exp(special.gammaln(1 + G))
-                para2 = lmom_ratios[1] * G / (GAM * (1 - 2 ** (-G)))
+                para2 = lmom_ratios[1] * G / (GAM * (1 - 2 ** -G))
                 para1 = lmom_ratios[0] - para2 * (1 - GAM) / G
-                para = [para1, para2, para3]
+                para = OrderedDict([('c', para3),
+                                    ('loc', para1),
+                                    ('scale', para2)])
                 return para
             elif T3 <= -0.97:
                 G = 1 - math.log(1 + T3) / DL2
 
             T0 = (T3 + 3) * 0.5
             for IT in range(1, maxit):
-                X2 = 2 ** (-G)
-                X3 = 3 ** (-G)
+                X2 = 2 ** -G
+                X3 = 3 ** -G
                 XX2 = 1 - X2
                 XX3 = 1 - X3
                 T = XX3 / XX2
                 DERIV = (XX2 * X3 * DL3 - XX3 * X2 * DL2) / (XX2 ** 2)
                 GOLD = G
-                G = G - (T - T0) / DERIV
+                G -= (T - T0) / DERIV
 
                 if abs(G - GOLD) <= eps * G:
                     para3 = G
                     GAM = math.exp(special.gammaln(1 + G))
-                    para2 = lmom_ratios[1] * G / (GAM * (1 - 2 ** (-G)))
+                    para2 = lmom_ratios[1] * G / (GAM * (1 - 2 ** -G))
                     para1 = lmom_ratios[0] - para2 * (1 - GAM) / G
                     para = OrderedDict([('c', para3),
                                         ('loc', para1),
@@ -1123,7 +1126,7 @@ class GenextremeGen(LmomDistrMixin, scipy.stats._continuous_distns.genextreme_ge
             else:
                 para3 = G
                 GAM = math.exp(special.gammaln(1 + G))
-                para2 = lmom_ratios[1] * G / (GAM * (1 - 2 ** (-G)))
+                para2 = lmom_ratios[1] * G / (GAM * (1 - 2 ** -G))
                 para1 = lmom_ratios[0] - para2 * (1 - GAM) / G
                 para = OrderedDict([('c', para3),
                                     ('loc', para1),
@@ -1159,7 +1162,7 @@ class GenextremeGen(LmomDistrMixin, scipy.stats._continuous_distns.genextreme_ge
             Z0 = 1
             for j in range(2, nmom):
                 DJ = j + 1
-                BETA = (1 - DJ ** (-c)) / XX2
+                BETA = (1 - DJ ** -c) / XX2
                 Z0 *= (4 * DJ - 6) / DJ
                 Z = Z0 * 3 * (DJ - 1) / (DJ + 1)
                 SUM = Z0 * BETA - Z
@@ -1373,10 +1376,10 @@ class FrechetRGen(LmomDistrMixin, scipy.stats._continuous_distns.frechet_r_gen):
             raise ValueError("L-Moments invalid")
 
         pg = gev.lmom_fit(lmom_ratios=[-lmom_ratios[0], lmom_ratios[1], -lmom_ratios[2]])
-        delta = 1 / pg[2]
-        beta = pg[1] / pg[2]
+        delta = 1 / pg['c']
+        beta = pg['scale'] / pg['c']
         para = OrderedDict([('c', delta),
-                            ('loc', -pg[0] - beta),
+                            ('loc', -pg['loc'] - beta),
                             ('scale', beta)])
         return para
 
