@@ -64,9 +64,9 @@ distribution with given parameters.
 
 .. note::
 
-   When fitting a distribution to (sample) data, the higher order **distribution's** L-moments may be
-   different from the **sample** L-moments. For example for a two-parameter distribution, τ3 (the distribution's third
-   L-moment) may be different from t3 (the sample's corresponding L-moment).
+   When fitting a distribution to (sample) data, the higher order **distribution's** L-moments may be different from the
+   **sample** L-moments. For example for a two-parameter distribution, τ3 (the distribution's third L-moment) may be
+   different from t3 (the sample's corresponding L-moment).
 
 Example:
 
@@ -75,39 +75,16 @@ Example:
 >>> distr.gam.lmom_ratios(nmom=4, **paras)
 [3.2363636363636363, 1.1418181181569327, 0.21862865148182167, 0.13877337951549581]
 
-Or using the frozen distribution:
+Or using the distribution with parameters "frozen":
 
 >>> moments = fitted_gam.lmom(nmom=3)
 >>> ratios = fitted_gam.lmom_ratios(nmom=4)
 
-Modified implementation of negative log likelihood function
------------------------------------------------------------
-
-:meth:`nnlf(data, *args, **kwds)`
-
-Calculates the Negative Log Likelihood. Provide data to calculate the negeative log likelihood. If no distribution
-parameters are provided, the `scipy` defaults of `loc=0` and `scale=1` are used.
-
-Example: Calculate the Negative Log Likelihood of a Gamma distribution fitted to `data`:
-
->>> from lmoments3 import distr
->>> paras = distr.gam.lmom_fit(data)
->>> distr.gam.nnlf(data, **paras)
-21.283995091031549
-
-Example:  Calculate the Negative Log Likelihood of a Gamma distribution with parameters 2.5 and 1.0 when fitted to
-`data`:
-
->>> from lmoments3 import distr
->>> from collections import OrderedDict
->>> distr.gam.nnlf(data, a=2.5, scale=1)
-22.166452544264637
-
 Other statistical methods
 -------------------------
 
-The :mod:`lmoments3.stats` module provides some additional statistical parametes to evaluate fitting of data to
-distribution function.
+The :mod:`lmoments3.stats` module provides some additional statistical parametes to evaluate fitting of data to a
+distribution.
 
 :func:`AIC(data, distr_name, distr_paras)`
 

@@ -22,6 +22,18 @@ import math
 
 
 def AIC(data, distr_name, distr_paras):
+    """
+    Calculate the Akaike information criterion (AIC) for a dataset fitted to a probability distribution.
+
+    :param data: Input data
+    :type data: `list` or `array_like`
+    :param distr_name: 3-Letter code of `lmoments3` distribution, e.g. `kap`
+    :type distr_name: `str`
+    :param distr_paras: Distribution parameters
+    :type distr_paras: `dict`
+    :return: AIC
+    :rtype: float
+    """
     distr_f = getattr(distr, distr_name.lower())  # scipy rv_continous class
 
     NLL = distr_f.nnlf(data, **distr_paras)
@@ -31,6 +43,19 @@ def AIC(data, distr_name, distr_paras):
 
 
 def AICc(data, distr_name, distr_paras):
+    """
+    Calculate the Akaike information criterion (AIC) for a dataset fitted to a probability distribution corrected for
+    short record lengths.
+
+    :param data: Input data
+    :type data: `list` or `array_like`
+    :param distr_name: 3-Letter code of `lmoments3` distribution, e.g. `kap`
+    :type distr_name: `str`
+    :param distr_paras: Distribution parameters
+    :type distr_paras: `dict`
+    :return: AICc
+    :rtype: float
+    """
     distr_f = getattr(distr, distr_name.lower())  # scipy rv_continous class
 
     AICbase = AIC(data, distr_name, distr_paras)
@@ -41,6 +66,18 @@ def AICc(data, distr_name, distr_paras):
 
 
 def BIC(data, distr_name, distr_paras):
+    """
+    Calculate the Bayesian information criterion (BIC) for a dataset fitted to a probability distribution.
+
+    :param data: Input data
+    :type data: `list` or `array_like`
+    :param distr_name: 3-Letter code of `lmoments3` distribution, e.g. `kap`
+    :type distr_name: `str`
+    :param distr_paras: Distribution parameters
+    :type distr_paras: `dict`
+    :return: AIC
+    :rtype: float
+    """
     distr_f = getattr(distr, distr_name.lower())  # scipy rv_continous class
 
     NLL = distr_f.nnlf(data, **distr_paras)

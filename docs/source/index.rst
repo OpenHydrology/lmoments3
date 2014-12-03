@@ -11,7 +11,7 @@ lmoments3 Library documentation
 
    -- `Wikipedia`_
 
-This library can be used to:
+The :mod:`lmoments3` library can be used to:
 
 1. Calculate L-moments from sample data.
 2. Fit probability distributions to sample data using L-moments.

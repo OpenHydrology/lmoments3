@@ -125,6 +125,7 @@ class LmomDistrMixin(object):
            estimate distribution parameters if these were not provided. This is no longer the case. Distribution
            parameters must be provided or the defaults (`loc`= 0, `scale`= 1) will be used.
 
+
         :param data: List of (sample) data
         :type data: Array_like
         :param args: Distribution parameters in order of shape(s), loc, scale
