@@ -28,8 +28,9 @@ import lmoments3 as lm
 
 class LmomDistrMixin(object):
     """
-    Mixin class to add L-moment methods to :class:`scipy.stats.rv_continous` distribution functions. Distributions using
-    the mixin should override the methods :meth:`._lmom_fit` and :meth:`.lmom_ratios`.
+    Mixin class to add L-moment methods to :class:`scipy.stats.rv_continous` distribution functions.
+
+    Distributions using the mixin should override the methods :meth:`._lmom_fit` and :meth:`._lmom_ratios`.
     """
 
     def _lmom_fit(self, lmom_ratios):
@@ -66,7 +67,9 @@ class LmomDistrMixin(object):
 
     def lmom(self, *args, nmom=5, **kwds):
         """
-        Compute the distribution's L-moments, e.g. l1, l2, l3, l4, ..
+        Compute the distribution's L-moments, e.g. λ1, λ2, λ3, λ4, ..
+
+        This method is also available in the "frozen" distribution.
 
         :param args: Distribution parameters in order of shape(s), loc, scale
         :type args: float
@@ -85,7 +88,9 @@ class LmomDistrMixin(object):
 
     def lmom_ratios(self, *args, nmom=5, **kwds):
         """
-        Compute the distribution's L-moment ratios, e.g. l1, l2, t3, t4, ..
+        Compute the distribution's L-moment ratios, e.g. λ1, λ2, τ3, τ4, ..
+
+        This method is also available in the "frozen" distribution.
 
         :param args: Distribution parameters in order of shape(s), loc, scale
         :type args: float
@@ -108,8 +113,28 @@ class LmomDistrMixin(object):
         return self._lmom_ratios(*shapes, loc=loc, scale=scale, nmom=nmom)
 
     def nnlf(self, data, *args, **kwds):
-        # Override `nnlf` to provide a more consistent interface with shape and loc and scale parameters
+        """
+        Return the negative log likelihood function of the distribution fitted to `data`.
 
+        This method overrides the default `scipy` implementation to provide a more consistent interface for providing
+        the distribution function parameters, exactly like in other `rv_continous` methods.
+
+        .. attention::
+
+           In :mod:`lmoments3` prior to version 1.0, the `nnlf` function could also automatically fit the data and
+           estimate distribution parameters if these were not provided. This is no longer the case. Distribution
+           parameters must be provided or the defaults (`loc`= 0, `scale`= 1) will be used.
+
+        :param data: List of (sample) data
+        :type data: Array_like
+        :param args: Distribution parameters in order of shape(s), loc, scale
+        :type args: float
+        :param kwds: Distribution parameters as named arguments. See :attr:`rv_continous.shapes` for names of shape
+                     parameters
+        :type kwds: float
+        :return: negative log likelihood
+        :rtype: float
+        """
         data = np.asarray(data)
         shapes, loc, scale = self._parse_args(*args, **kwds)
         # This is how scipy's nnlf requires parameters
