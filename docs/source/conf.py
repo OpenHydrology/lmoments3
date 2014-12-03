@@ -15,6 +15,18 @@
 
 import sys
 import os
+from unittest.mock import MagicMock
+
+
+# Mock packages that cannot be installed on readthedocs.org.
+class Mock(MagicMock):
+    @classmethod
+    def __getattr__(cls, name):
+            return Mock()
+
+MOCK_MODULES = ['numpy', 'scipy', 'scipy.misc', 'lmoments3', 'lmoments3.distr', 'lmoments3.stat']
+sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
+
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
