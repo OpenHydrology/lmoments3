@@ -1,6 +1,13 @@
 Reference manual
 ================
 
+Sample L-moments
+----------------
+
+.. py:currentmodule:: lmoments3
+
+.. autofunction:: lmom_ratios
+
 Distributions
 -------------
 
@@ -14,3 +21,12 @@ Distributions
    .. automethod:: lmom
    .. automethod:: lmom_ratios
    .. automethod:: nnlf
+
+
+Other statistical functions
+---------------------------
+
+.. py:currentmodule:: lmoments3.stats
+
+.. automodule:: lmoments3.stats
+   :members:
