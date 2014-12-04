@@ -24,8 +24,7 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
             return Mock()
 
-MOCK_MODULES = ['numpy', 'scipy', 'scipy.misc', 'scipy.stats', 'scipy.stats._continuous_distns', 'scipy.special',
-                'lmoments3', 'lmoments3.distr', 'lmoments3.stat']
+MOCK_MODULES = ['numpy', 'scipy', 'scipy.misc', 'scipy.stats', 'scipy.stats._continuous_distns', 'scipy.special']
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 

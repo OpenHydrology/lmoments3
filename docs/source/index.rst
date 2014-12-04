@@ -16,10 +16,14 @@ The :mod:`lmoments3` library can be used to:
 1. Calculate L-moments from sample data.
 2. Fit probability distributions to sample data using L-moments.
 
-The library extends the `scipy.stats module`_ with additional methods. Supported distributions are described in
-:doc:`/distributions`.
+The library extends the `scipy.stats module`_ with additional methods.
 
-Contents:
+.. tip::
+
+   Distributions supported by `lmoments3` are documented in :doc:`/distributions`.
+
+Contents
+--------
 
 .. toctree::
    :numbered:
