@@ -1,3 +1,7 @@
+version 1.0.2 (2015-02-11)
+--------------------------
+- Conda package build fix
+
 version 1.0.1 (2014-12-02)
 --------------------------
 - Fix `lmom_fit` for `gev` distribution. Did not return `OrderedDict` in some cases.
