@@ -1,1 +1,3 @@
 include README.rst
+include versioneer.py
+include lmoments3/_version.py

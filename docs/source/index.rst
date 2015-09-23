@@ -1,6 +1,8 @@
 lmoments3 Library documentation
 ===============================
 
+Version |version|
+
 This library was designed to use L-moments to calculate optimal parameters for a number of distributions. This library
 extends a number of :mod:`scipy` distributions and provides some additional distributions frequently used in Extreme
 Value Analyses.
