@@ -32,3 +32,4 @@ html_static_path = ['_static']
 html_last_updated_fmt = '%d/%m/%Y'
 html_show_sphinx = False
 htmlhelp_basename = 'doc'
+html_show_sourcelink = False
