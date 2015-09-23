@@ -134,19 +134,3 @@ Example: Calculate the Akaike Information Criterion for the weibull distribution
 
 Functions :func:`AICc` and :func:`BIC` have a similar structure and calculate the corrected Akaike Information Criterion
 and the Bayesian Information Criterion respectively.
-
-
-Contents:
-
-.. toctree::
-   :maxdepth: 2
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
-
