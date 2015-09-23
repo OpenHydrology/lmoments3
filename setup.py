@@ -1,11 +1,9 @@
 from setuptools import setup
+import versioneer
 
 setup(
     name='lmoments3',
-    version='1.0.2',
     packages=['lmoments3'],
-    install_requires=[
-        'numpy',
-        'scipy'
-    ],
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass()
 )

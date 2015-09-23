@@ -58,6 +58,10 @@ Licensing for Python Translation:
 
 """
 
+from ._version import get_versions
+__version__ = get_versions()['version']
+del get_versions
+
 import scipy.misc as sm
 import numpy as np
 

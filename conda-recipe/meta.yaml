@@ -10,13 +10,13 @@ source:
 
 requirements:
   build:
-    - python
+    - python 3*
     - setuptools
     - numpy 1.9*
     - scipy >=0.14
 
   run:
-    - python
+    - python 3*
     - numpy 1.9*
     - scipy >=0.14
 
@@ -27,5 +27,7 @@ test:
 about:
   home: http://github.com/OpenHydrology/lmoments3
   license: GPLv3
+  license_file: LICENSE
   summary: Python library for estimating linear moments for statistical distributions
+  readme: README.rst
 
