@@ -10,13 +10,13 @@ source:
 
 requirements:
   build:
-    - python 3*
+    - python
     - setuptools
     - numpy 1.9*
     - scipy >=0.14
 
   run:
-    - python 3*
+    - python
     - numpy 1.9*
     - scipy >=0.14
 
