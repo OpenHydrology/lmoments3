@@ -30,7 +30,5 @@ foreach ($pyversion in $pyversions) {
 }
 
 if ($upload) {
-    foreach ($pkg in $built_pkgs) {
-        anaconda upload --user $user --channel $channel --force $pkg
-    }
+    anaconda upload --user $user --channel $channel --force $built_pkgs
 }
