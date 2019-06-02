@@ -62,7 +62,7 @@ from ._version import get_versions
 __version__ = get_versions()['version']
 del get_versions
 
-import scipy.misc as sm
+import scipy.special
 import numpy as np
 
 
@@ -99,7 +99,7 @@ def _samlmularge(x, nmom=5):
         raise ValueError("Insufficient length of data for specified nmoments")
 
     ##Calculate first order
-    l = [np.sum(x) / sm.comb(n, 1, exact=True)]
+    l = [np.sum(x) / scipy.special.comb(n, 1, exact=True)]
 
     if nmom == 1:
         return l[0]
@@ -109,10 +109,10 @@ def _samlmularge(x, nmom=5):
     for i in range(1, nmom):
         comb.append([])
         for j in range(n):
-            comb[-1].append(sm.comb(j, i, exact=True))
+            comb[-1].append(scipy.special.comb(j, i, exact=True))
 
     for mom in range(2, nmom + 1):
-        coefl = 1.0 / mom * 1.0 / sm.comb(n, mom, exact=True)
+        coefl = 1.0 / mom * 1.0 / scipy.special.comb(n, mom, exact=True)
         xtrans = []
         for i in range(0, n):
             coeftemp = []
@@ -126,7 +126,7 @@ def _samlmularge(x, nmom=5):
                 coeftemp[j] = coeftemp[j] * comb[j - 1][n - i - 1]
 
             for j in range(0, mom):
-                coeftemp[j] = coeftemp[j] * sm.comb(mom - 1, j, exact=True)
+                coeftemp[j] = coeftemp[j] * scipy.special.comb(mom - 1, j, exact=True)
 
             for j in range(0, int(0.5 * mom)):
                 coeftemp[j * 2 + 1] = -coeftemp[j * 2 + 1]
@@ -156,7 +156,7 @@ def _samlmusmall(x, nmom=5):
 
     # First L-moment
 
-    l1 = np.sum(x) / sm.comb(n, 1, exact=True)
+    l1 = np.sum(x) / scipy.special.comb(n, 1, exact=True)
 
     if nmom == 1:
         return l1
@@ -164,7 +164,7 @@ def _samlmusmall(x, nmom=5):
     # Second L-moment
 
     comb1 = range(n)
-    coefl2 = 0.5 / sm.comb(n, 2, exact=True)
+    coefl2 = 0.5 / scipy.special.comb(n, 2, exact=True)
     sum_xtrans = sum([(comb1[i] - comb1[n - i - 1]) * x[i] for i in range(n)])
     l2 = coefl2 * sum_xtrans
 
@@ -173,8 +173,8 @@ def _samlmusmall(x, nmom=5):
 
     # Third L-moment
 
-    comb3 = [sm.comb(i, 2, exact=True) for i in range(n)]
-    coefl3 = 1.0 / 3.0 / sm.comb(n, 3, exact=True)
+    comb3 = [scipy.special.comb(i, 2, exact=True) for i in range(n)]
+    coefl3 = 1.0 / 3.0 / scipy.special.comb(n, 3, exact=True)
     sum_xtrans = sum([(comb3[i] - 2 * comb1[i] * comb1[n - i - 1] + comb3[n - i - 1]) * x[i] for i in range(n)])
     l3 = coefl3 * sum_xtrans / l2
 
@@ -183,8 +183,8 @@ def _samlmusmall(x, nmom=5):
 
     # Fourth L-moment
 
-    comb5 = [sm.comb(i, 3, exact=True) for i in range(n)]
-    coefl4 = 0.25 / sm.comb(n, 4, exact=True)
+    comb5 = [scipy.special.comb(i, 3, exact=True) for i in range(n)]
+    coefl4 = 0.25 / scipy.special.comb(n, 4, exact=True)
     sum_xtrans = sum(
         [(comb5[i] - 3 * comb3[i] * comb1[n - i - 1] + 3 * comb1[i] * comb3[n - i - 1] - comb5[n - i - 1]) * x[i]
          for i in range(n)])
@@ -195,8 +195,8 @@ def _samlmusmall(x, nmom=5):
 
     # Fifth L-moment
 
-    comb7 = [sm.comb(i, 4, exact=True) for i in range(n)]
-    coefl5 = 0.2 / sm.comb(n, 5, exact=True)
+    comb7 = [scipy.special.comb(i, 4, exact=True) for i in range(n)]
+    coefl5 = 0.2 / scipy.special.comb(n, 5, exact=True)
     sum_xtrans = sum(
         [(comb7[i] - 4 * comb5[i] * comb1[n - i - 1] + 6 * comb3[i] * comb3[n - i - 1] -
           4 * comb1[i] * comb5[n - i - 1] + comb7[n - i - 1]) * x[i]
