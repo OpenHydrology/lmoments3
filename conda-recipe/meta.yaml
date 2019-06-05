@@ -12,13 +12,13 @@ requirements:
   build:
     - python
     - setuptools
-    - numpy 1.9*
-    - scipy >=0.14
+    - numpy
+    - scipy
 
   run:
     - python
-    - numpy 1.9*
-    - scipy >=0.14
+    - numpy
+    - scipy
 
 test:
   imports:
@@ -29,5 +29,4 @@ about:
   license: GPLv3
   license_file: LICENSE
   summary: Python library for estimating linear moments for statistical distributions
-  readme: README.rst
 
