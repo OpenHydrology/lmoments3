@@ -1,4 +1,4 @@
-version 1.1.0 (unreleased)
+version 1.0.4 (unreleased)
 --------------------------
 - rename `frechet_r_gen` to `weibull_min_r`, `frechet_r` being deprecated with SciPy 1.6
 
