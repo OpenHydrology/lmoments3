@@ -683,7 +683,8 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
 
     """
 
-    def _argcheck(self, b, c, d):
+    def _argcheck(self, b, c, d, xi, a):
+        a = np.asarray(a)
         b = np.asarray(b)
         c = np.asarray(c)
         d = np.asarray(d)
@@ -692,26 +693,27 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
                          (b == c) & (c == d) & (d == 0))
         np.putmask(check, c > 0, d > 0)
         np.putmask(check, c < 0, False)
+        np.putmask(check, a + c < 0, False)
         return check
 
-    def _ppf(self, q, b, c, d):
+    def _ppf(self, q, b, c, d, xi, a):
         z = -np.log(1. - q)
         u = np.where(b == 0, z, (1. - np.exp(-b * z)) / b)
         v = np.where(d == 0, z, (1. - np.exp(d * z)) / d)
-        return u - c * v
+        return a * u - c * v + xi
 
-    def _cdf(self, x, b, c, d):
+    def _cdf(self, x, b, c, d, xi, a):
         if hasattr(x, '__iter__'):
             if hasattr(b, '__iter__'):
                 # Assume x, b, c, d are arrays with matching length
                 result = np.array([self._cdfwak(_, parameters)
-                                   for (_, parameters) in zip(x, zip(b, c, d))])
+                                   for (_, parameters) in zip(x, zip(b, c, d, xi, a))])
             else:
                 # Only x is an array, paras are scalars
-                result = np.array([self._cdfwak(_, [b, c, d])
+                result = np.array([self._cdfwak(_, [b, c, d, xi, a])
                                    for _ in x])
         else:
-            result = self._cdfwak(x, (b, c, d))
+            result = self._cdfwak(x, (b, c, d, xi, a))
         return result
 
     def _cdfwak(self, x, para):
@@ -722,9 +724,9 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
         ZINCMX = 3
         ZMULT = 0.2
         UFL = -170
-        XI = 0  # stats.rv_continuous deals with scaling
-        A = 1  # stats.rv_continuous deals with scaling
-        B, C, D = para
+        # XI =   # stats.rv_continuous deals with scaling
+        # A =  # stats.rv_continuous deals with scaling
+        B, C, D, XI, A = para
 
         CDFWAK = 0
         if x <= XI:
@@ -810,9 +812,9 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
                         CDFWAK = 1 - math.exp(-Z)
                     return CDFWAK
 
-    def _pdf(self, x, b, c, d):
-        t = (1. - self._cdf(x, b, c, d))
-        f = t ** (d + 1) / (t ** (b + d) + c)
+    def _pdf(self, x, b, c, d, xi, a):
+        t = (1. - self._cdf(x, b, c, d, xi, a))
+        f = t ** (d + 1) / (a * t ** (b + d) + c)
         return f
 
     def _lmom_fit(self, lmom_ratios):
