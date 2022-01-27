@@ -460,7 +460,7 @@ class KappaGen(LmomDistrMixin, scipy.stats.rv_continuous):
         T3 = lmom_ratios[2]
         T4 = lmom_ratios[3]
         if lmom_ratios[1] <= 0 or abs(T3) >= 1 or abs(T4) >= 1 or T4 <= (5 * T3 * T3 - 1) / 4 or \
-                        T4 >= (5 * T3 * T3 + 1) / 6:
+                T4 >= (5 * T3 * T3 + 1) / 6:
             raise ValueError("L-Moments invalid")
 
         G = (1 - 3 * T3) / (1 + T3)
@@ -683,37 +683,37 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
 
     """
 
-    def _argcheck(self, b, c, d, xi, a):
-        a = np.asarray(a)
-        b = np.asarray(b)
-        c = np.asarray(c)
-        d = np.asarray(d)
-        check = np.where(b + d > 0,
-                         np.where(c == 0, d == 0, True),
-                         (b == c) & (c == d) & (d == 0))
-        np.putmask(check, c > 0, d > 0)
-        np.putmask(check, c < 0, False)
-        np.putmask(check, a + c < 0, False)
+    def _argcheck(self, b, c, d, a):
+        alpha = np.asarray(a)
+        beta = np.asarray(b)
+        gamma = np.asarray(c)
+        delta = np.asarray(d)
+        cond1 = alpha + beta >= 0
+        cond2 = (alpha + beta) > 0 or (b == 0 and gamma == 0 and delta == 0)
+        cond3 = np.where(gamma == 0, delta == 0, True)
+        cond4 = gamma >= 0
+        cond5 = alpha + gamma >= 0
+        check = cond1 and cond2 and cond3 and cond4 and cond5
         return check
 
-    def _ppf(self, q, b, c, d, xi, a):
+    def _ppf(self, q, b, c, d, a):
         z = -np.log(1. - q)
         u = np.where(b == 0, z, (1. - np.exp(-b * z)) / b)
         v = np.where(d == 0, z, (1. - np.exp(d * z)) / d)
-        return a * u - c * v + xi
+        return a * u - c * v
 
-    def _cdf(self, x, b, c, d, xi, a):
+    def _cdf(self, x, b, c, d, a):
         if hasattr(x, '__iter__'):
-            if hasattr(b, '__iter__'):
+            if hasattr(b, '__iter__') and (np.size(b) == np.size(x)):
                 # Assume x, b, c, d are arrays with matching length
                 result = np.array([self._cdfwak(_, parameters)
-                                   for (_, parameters) in zip(x, zip(b, c, d, xi, a))])
+                                   for (_, parameters) in zip(x, zip(b, c, d, a))])
             else:
                 # Only x is an array, paras are scalars
-                result = np.array([self._cdfwak(_, [b, c, d, xi, a])
+                result = np.array([self._cdfwak(_, [b, c, d, a])
                                    for _ in x])
         else:
-            result = self._cdfwak(x, (b, c, d, xi, a))
+            result = self._cdfwak(x, (b, c, d, a))
         return result
 
     def _cdfwak(self, x, para):
@@ -724,9 +724,8 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
         ZINCMX = 3
         ZMULT = 0.2
         UFL = -170
-        # XI =   # stats.rv_continuous deals with scaling
-        # A =  # stats.rv_continuous deals with scaling
-        B, C, D, XI, A = para
+        XI = 0  # stats.rv_continuous deals with location
+        B, C, D, A = para
 
         CDFWAK = 0
         if x <= XI:
@@ -812,8 +811,8 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
                         CDFWAK = 1 - math.exp(-Z)
                     return CDFWAK
 
-    def _pdf(self, x, b, c, d, xi, a):
-        t = (1. - self._cdf(x, b, c, d, xi, a))
+    def _pdf(self, x, b, c, d, a):
+        t = (1. - self._cdf(x, b, c, d, a))
         f = t ** (d + 1) / (a * t ** (b + d) + c)
         return f
 
@@ -866,18 +865,19 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
         para = OrderedDict([('beta', B),
                             ('gamma', C),
                             ('delta', D),
-                            ('loc', XI),
-                            ('scale', A)])
+                            ('alpha', A),
+                            ('loc', XI)]
+                           )
         return para
 
-    def _lmom_ratios(self, beta, gamma, delta, loc, scale, nmom):
+    def _lmom_ratios(self, beta, gamma, delta, alpha, loc, scale, nmom):
         if (delta >= 1) \
                 or (beta + delta <= 0 and (beta != 0 or gamma != 0 or delta != 0)) \
-                or (scale == 0 and beta != 0) \
+                or (alpha == 0 and beta != 0) \
                 or (gamma == 0 and delta != 0) \
                 or (gamma < 0) \
-                or (scale + gamma < 0) \
-                or (scale == 0 and gamma == 0):
+                or (alpha + gamma < 0) \
+                or (alpha == 0 and gamma == 0):
             raise ValueError("Invalid parameters")
 
         Y = scale / (1 + beta)
@@ -900,7 +900,7 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
         return xmom
 
 
-wak = WakebyGen(name='wakeby', shapes='beta, gamma, delta')
+wak = WakebyGen(name='wakeby', shapes='beta, gamma, delta, alpha')
 
 """
 The following distributions are available in `scipy.stats` and are redefined here with an `LmomDistrMixin` to extend the
