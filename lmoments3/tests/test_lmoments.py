@@ -150,7 +150,7 @@ class TestPe3(DistributionTestCase):
 
 class TestWak(DistributionTestCase):
     dist = 'wak'
-    paras = {'loc': 0.7928727, 'scale': 2.7855796, 'beta': 0.14, 'gamma': 0, 'delta': 0}
+    paras = {'loc': 0.7928727, 'scale': 1, 'alpha': 2.7855796, 'beta': 0.14, 'gamma': 0, 'delta': 0}
     correct_fit = [0.7928727, 2.7855796, 0.1400000, 0.0000000, 0.0000000]
     correct_qua = [1.404848, 2.632964, 4.806899]
     correct_lmr = [3.2363636, 1.1418182, 0.2738854, 0.1230499]

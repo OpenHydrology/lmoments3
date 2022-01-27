@@ -866,7 +866,8 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
                             ('gamma', C),
                             ('delta', D),
                             ('alpha', A),
-                            ('loc', XI)]
+                            ('loc', XI),
+                            ('scale', 1)]
                            )
         return para
 
@@ -880,7 +881,7 @@ class WakebyGen(LmomDistrMixin, scipy.stats.rv_continuous):
                 or (alpha == 0 and gamma == 0):
             raise ValueError("Invalid parameters")
 
-        Y = scale / (1 + beta)
+        Y = alpha / (1 + beta)
         Z = gamma / (1 - delta)
         xmom = [loc + Y + Z]
         if nmom == 1:
