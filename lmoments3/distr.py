@@ -26,6 +26,14 @@ import math
 import lmoments3 as lm
 
 
+try:
+    # Scipy >= 1.9
+    from scipy.stats._distn_infrastructure import rv_continuous_frozen
+except ImportError:
+    # Scipy < 1.9
+    from scipy.stats._distn_infrastructure import rv_frozen as rv_continuous_frozen
+
+
 class LmomDistrMixin(object):
     """
     Mixin class to add L-moment methods to :class:`scipy.stats.rv_continous` distribution functions. Distributions using
@@ -123,7 +131,7 @@ class LmomDistrMixin(object):
         return LmomFrozenDistr(self, *args, **kwds)
 
 
-class LmomFrozenDistr(scipy.stats.distributions.rv_frozen):
+class LmomFrozenDistr(rv_continuous_frozen):
     """
     Frozen version of the distribution returned by :class:`LmomDistrMixin`. Simply provides additional methods supported
     by the mixin.
@@ -1370,7 +1378,7 @@ class Pearson3Gen(LmomDistrMixin, scipy.stats._continuous_distns.pearson3_gen):
 pe3 = Pearson3Gen(name="pearson3", shapes='skew')
 
 
-class FrechetRGen(LmomDistrMixin, scipy.stats._continuous_distns.frechet_r_gen):
+class FrechetRGen(LmomDistrMixin, scipy.stats._continuous_distns.weibull_min_gen):
     def _lmom_fit(self, lmom_ratios):
         if lmom_ratios[1] <= 0 or lmom_ratios[2] >= 1 or lmom_ratios[2] <= -gum.lmom_ratios(nmom=3)[2]:
             raise ValueError("L-Moments invalid")
