@@ -26,6 +26,14 @@ import math
 import lmoments3 as lm
 
 
+try:
+    # Scipy >= 1.9
+    from scipy.stats._distn_infrastructure import rv_continuous_frozen
+except ImportError:
+    # Scipy < 1.9
+    from scipy.stats._distn_infrastructure import rv_frozen as rv_continuous_frozen
+
+
 class LmomDistrMixin(object):
     """
     Mixin class to add L-moment methods to :class:`scipy.stats.rv_continous` distribution functions. Distributions using
@@ -123,7 +131,7 @@ class LmomDistrMixin(object):
         return LmomFrozenDistr(self, *args, **kwds)
 
 
-class LmomFrozenDistr(scipy.stats.distributions.rv_frozen):
+class LmomFrozenDistr(rv_continuous_frozen):
     """
     Frozen version of the distribution returned by :class:`LmomDistrMixin`. Simply provides additional methods supported
     by the mixin.
