@@ -1,6 +1,12 @@
 lmoments3
 =========
 
+.. note::
+
+    The `lmoments3` project development has officially moved to https://github.com/Ouranosinc/lmoments3.
+    For any issues or pull requests (enhancements, bug fixes), please open them at the Ouranos fork.
+    This repository remains accessible for archival purposes.
+
 Python 3.x library to estimate linear moments for statistical distribution functions
 
 Requires the packages `numpy` and `scipy`.
